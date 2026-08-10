@@ -21,7 +21,7 @@ export default function AdminLayout({
           </p>
         </div>
 
-        <AdminNav />
+        <AdminNav variant="sidebar" />
 
         <div className="mt-auto pt-6 space-y-2">
           <Link
@@ -34,12 +34,20 @@ export default function AdminLayout({
         </div>
       </aside>
 
-      {/* Topo — mobile */}
+      {/* Topo — mobile, mesmo padrão visual da sidebar */}
       <div className="md:hidden border-b border-slateline">
         <div className="flex items-center justify-between px-6 py-4">
-          <Link href="/admin" className="font-display text-lg">
-            Alana Sofia · Admin
-          </Link>
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full border border-slateline flex items-center justify-center shrink-0">
+              <span className="font-display text-shimmer text-base">AS</span>
+            </div>
+            <div>
+              <p className="font-display text-base leading-tight">Alana Sofia</p>
+              <p className="text-steel text-[10px] uppercase tracking-wide">
+                Painel administrativo
+              </p>
+            </div>
+          </div>
           <div className="flex items-center gap-3">
             <Link href="/" className="text-sm text-steel hover:text-platinum">
               Ver site
@@ -47,16 +55,8 @@ export default function AdminLayout({
             <LogoutButton />
           </div>
         </div>
-        <div className="flex items-center gap-4 px-6 pb-3 text-sm overflow-x-auto">
-          <Link href="/admin" className="text-steel hover:text-platinum whitespace-nowrap">
-            Dashboard
-          </Link>
-          <Link href="/admin/presentes" className="text-steel hover:text-platinum whitespace-nowrap">
-            Presentes
-          </Link>
-          <Link href="/admin/mensagens" className="text-steel hover:text-platinum whitespace-nowrap">
-            Mensagens
-          </Link>
+        <div className="px-6 pb-4">
+          <AdminNav variant="mobile" />
         </div>
       </div>
 
