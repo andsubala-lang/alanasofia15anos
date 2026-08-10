@@ -8,10 +8,20 @@ export default function AdminLayout({
 }) {
   return (
     <div className="min-h-screen">
-      <header className="border-b border-slateline px-6 py-4 flex items-center justify-between">
-        <Link href="/admin" className="font-display text-xl">
-          Alana Sofia · Admin
-        </Link>
+      <header className="border-b border-slateline px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex items-center gap-6">
+          <Link href="/admin" className="font-display text-xl whitespace-nowrap">
+            Alana Sofia · Admin
+          </Link>
+          <nav className="flex items-center gap-4 text-sm">
+            <Link href="/admin" className="text-steel hover:text-platinum">
+              Presentes
+            </Link>
+            <Link href="/admin/mensagens" className="text-steel hover:text-platinum">
+              Mensagens
+            </Link>
+          </nav>
+        </div>
         <div className="flex items-center gap-4">
           <Link href="/" className="text-sm text-steel hover:text-platinum">
             Ver site
