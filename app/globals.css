@@ -14,12 +14,46 @@ html {
 
 body {
   @apply bg-onyx text-platinum font-body;
-  background-image:
-    radial-gradient(circle at 50% 0%, #1C1F26 0%, #0B0C10 60%),
-    radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: auto, 22px 22px;
+  background-color: #0B0C10;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 22px 22px;
   min-height: 100vh;
   -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+
+/* Brilho de fundo que "respira" bem devagar, atrás de todo o conteúdo */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 50% 5%, #2A2F39 0%, #0B0C10 65%),
+    radial-gradient(circle at 50% 100%, #1C1F26 0%, transparent 55%);
+  animation: breathe 4s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+/* Pontinhos de glitter — usados no site público */
+.sparkle-dot {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 9999px;
+  background: #F1F3F6;
+  box-shadow: 0 0 4px 1px rgba(241, 243, 246, 0.7);
+  animation: twinkle 2.6s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 1; }
 }
 
 /* Texto com efeito de brilho metálico — usado no nome/monograma */
@@ -133,7 +167,18 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .text-shimmer {
     animation: none;
-    background-position: 0 0;
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    color: #E4E7EC;
+  }
+  body::before {
+    animation: none;
+    opacity: 0.9;
+  }
+  .sparkle-dot {
+    animation: none;
+    opacity: 0.5;
   }
   .animate-fade-in-up {
     animation: none;
