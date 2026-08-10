@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Cormorant Garamond", serif;
+  --font-body: "Manrope", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-onyx text-platinum font-body;
+  background-image: radial-gradient(circle at 50% 0%, #1C1F26 0%, #0B0C10 60%);
+  min-height: 100vh;
+}
+
+/* Texto com efeito de brilho metálico — usado no nome/monograma */
+.text-shimmer {
+  background: linear-gradient(110deg, #8A93A3 8%, #F1F3F6 18%, #8A93A3 33%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Respeita quem prefere menos animação */
+@media (prefers-reduced-motion: reduce) {
+  .text-shimmer {
+    animation: none;
+    background-position: 0 0;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Foco visível para acessibilidade */
+:focus-visible {
+  outline: 2px solid #C7CCD6;
+  outline-offset: 2px;
+}
