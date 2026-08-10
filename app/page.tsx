@@ -167,30 +167,24 @@ export default function Home() {
       )}
 
       {/* Hero */}
-      <section className="max-w-2xl mx-auto text-center mb-12 sm:mb-16 md:mb-20">
-        <div className="mx-auto w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-slateline flex items-center justify-center mb-5 animate-fade-in-up">
-          <span className="font-display text-shimmer text-lg sm:text-xl">AS</span>
+      <section className="max-w-2xl mx-auto text-center mb-8 sm:mb-10">
+        <div className="mx-auto w-11 h-11 sm:w-12 sm:h-12 rounded-full border border-slateline flex items-center justify-center mb-4 animate-fade-in-up">
+          <span className="font-display text-shimmer text-base sm:text-lg">AS</span>
         </div>
         <p
-          className="uppercase tracking-[0.3em] text-steel text-[10px] sm:text-xs mb-3 animate-fade-in-up"
+          className="text-steel text-xs sm:text-sm tracking-[0.15em] uppercase mb-7 animate-fade-in-up"
           style={{ animationDelay: "0.05s" }}
         >
-          Convite
+          Alana Sofia · 15 anos
         </p>
         <h1
-          className="font-display text-shimmer text-5xl sm:text-6xl md:text-8xl font-semibold leading-[0.95] mb-3 animate-fade-in-up"
+          className="font-display text-shimmer text-4xl sm:text-5xl md:text-7xl font-semibold leading-[0.95] mb-4 animate-fade-in-up"
           style={{ animationDelay: "0.1s" }}
         >
-          Alana Sofia
+          Lista de presentes
         </h1>
-        <p
-          className="text-steel text-xs sm:text-sm md:text-base tracking-[0.2em] uppercase animate-fade-in-up"
-          style={{ animationDelay: "0.15s" }}
-        >
-          15 anos
-        </p>
 
-        <div className="mt-6 sm:mt-8 mb-6 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+        <div className="mb-6 animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
           <div className="divider-flourish">
             <span className="text-steel text-xs">✦</span>
           </div>
@@ -204,7 +198,7 @@ export default function Home() {
             window.open(`https://wa.me/?text=${texto}`, "_blank");
           }}
           className="inline-flex items-center gap-2 text-xs sm:text-sm px-4 py-2.5 rounded-full border border-slateline text-steel hover:text-platinum hover:border-steel active:scale-[0.97] transition-all animate-fade-in-up"
-          style={{ animationDelay: "0.25s" }}
+          style={{ animationDelay: "0.2s" }}
         >
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12.04 2c-5.52 0-10 4.48-10 10 0 1.76.46 3.45 1.33 4.95L2 22l5.2-1.36a9.96 9.96 0 0 0 4.84 1.24h.01c5.52 0 10-4.48 10-10s-4.49-9.88-10.01-9.88Zm5.85 14.1c-.25.7-1.45 1.35-2 1.44-.55.09-1.15.13-1.85-.11-.43-.14-.98-.33-1.68-.65-2.96-1.28-4.89-4.25-5.04-4.45-.15-.2-1.21-1.6-1.21-3.06s.76-2.17 1.03-2.47c.27-.3.59-.37.79-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.25.6.85 2.06.92 2.21.07.15.12.33.02.53-.1.2-.15.33-.3.5-.15.18-.31.4-.45.53-.15.15-.3.31-.13.61.17.3.76 1.25 1.63 2.02 1.12.99 2.06 1.3 2.36 1.45.3.15.48.13.65-.08.18-.2.75-.87.95-1.18.2-.3.4-.25.67-.15.28.1 1.75.83 2.05.98.3.15.5.23.57.35.08.13.08.72-.17 1.42Z" />
@@ -213,15 +207,33 @@ export default function Home() {
         </button>
       </section>
 
+      {/* Aviso pra quem vai comprar pessoalmente */}
+      <div
+        className="card-premium max-w-md mx-auto mb-10 px-4 py-3.5 flex items-start gap-3 text-left animate-fade-in-up"
+        style={{ animationDelay: "0.25s" }}
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.75"
+          className="text-steel shrink-0 mt-0.5"
+        >
+          <path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7" />
+          <path d="M2 7h20v5H2z" />
+          <path d="M12 22V7" />
+          <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7Z" />
+          <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7Z" />
+        </svg>
+        <p className="text-xs sm:text-sm text-steel leading-snug">
+          Vai comprar pessoalmente? Reserve aqui para que ninguém escolha o mesmo presente.
+        </p>
+      </div>
+
       {/* Lista de presentes */}
       <section className="max-w-4xl mx-auto">
-        <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-center mb-2">
-          Lista de presentes
-        </h2>
-        <p className="text-steel text-center text-xs sm:text-sm mb-8 px-4">
-          Escolha um presente para reservar. Cada item só pode ser escolhido por uma pessoa.
-        </p>
-
         {/* Busca e filtros — fixos ao rolar, pra ficar sempre à mão no celular */}
         <div className="sticky top-0 z-10 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 mb-6 bg-onyx/85 backdrop-blur-sm border-b border-slateline/60">
           <div className="max-w-4xl mx-auto flex flex-col sm:flex-row gap-2.5">
