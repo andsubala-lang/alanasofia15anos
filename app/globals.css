@@ -15,14 +15,16 @@ html {
 body {
   @apply bg-onyx text-platinum font-body;
   background-color: #0B0C10;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: 22px 22px;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.012) 0px, rgba(255, 255, 255, 0.012) 1px, transparent 1px, transparent 3px);
+  background-size: 22px 22px, auto;
   min-height: 100vh;
   -webkit-tap-highlight-color: transparent;
   position: relative;
 }
 
-/* Brilho de fundo mais forte, estático — dá profundidade sem "pulsar" */
+/* Brilho de fundo mais forte, estático, com vinheta — dá profundidade sem "pulsar" */
 body::before {
   content: "";
   position: fixed;
@@ -31,7 +33,19 @@ body::before {
   pointer-events: none;
   background-image:
     radial-gradient(circle at 50% 8%, #2E333D 0%, #0B0C10 60%),
-    radial-gradient(circle at 50% 100%, #1C1F26 0%, transparent 55%);
+    radial-gradient(circle at 50% 100%, #1C1F26 0%, transparent 55%),
+    radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+/* Moldura fina prateada ao redor de toda a tela */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 10px;
+  border: 1px solid rgba(199, 204, 214, 0.12);
+  border-radius: 10px;
+  pointer-events: none;
+  z-index: 40;
 }
 
 /* Pontinhos de glitter — usados no site público */
@@ -52,7 +66,7 @@ body::before {
 
 /* Texto com efeito de brilho metálico — usado no nome/monograma */
 .text-shimmer {
-  background: linear-gradient(110deg, #8A93A3 8%, #F1F3F6 18%, #8A93A3 33%);
+  background: linear-gradient(110deg, #8A93A3 20%, #F1F3F6 40%, #8A93A3 60%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -61,8 +75,8 @@ body::before {
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* Entrada suave dos elementos ao carregar a página */
