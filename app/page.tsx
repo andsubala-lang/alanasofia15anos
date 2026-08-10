@@ -84,9 +84,7 @@ export default function Home() {
     <main className="min-h-screen px-5 sm:px-6 py-12 sm:py-16 md:py-24">
       {/* Hero */}
       <section className="max-w-2xl mx-auto text-center mb-12 sm:mb-16 md:mb-20">
-        <div
-          className="mx-auto w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-slateline flex items-center justify-center mb-5 animate-fade-in-up"
-        >
+        <div className="mx-auto w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-slateline flex items-center justify-center mb-5 animate-fade-in-up">
           <span className="font-display text-shimmer text-lg sm:text-xl">AS</span>
         </div>
         <p
@@ -107,10 +105,13 @@ export default function Home() {
         >
           15 anos
         </p>
-        <div
-          className="w-12 h-px bg-slateline mx-auto mt-6 sm:mt-8 mb-6 animate-fade-in-up"
-          style={{ animationDelay: "0.2s" }}
-        />
+
+        <div className="mt-6 sm:mt-8 mb-6 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+          <div className="divider-flourish">
+            <span className="text-steel text-xs">✦</span>
+          </div>
+        </div>
+
         <button
           onClick={() => {
             const texto = encodeURIComponent(
@@ -118,7 +119,7 @@ export default function Home() {
             );
             window.open(`https://wa.me/?text=${texto}`, "_blank");
           }}
-          className="inline-flex items-center gap-2 text-xs sm:text-sm px-4 py-2.5 rounded-full border border-slateline text-steel hover:text-platinum hover:border-steel active:scale-[0.98] transition-all animate-fade-in-up"
+          className="inline-flex items-center gap-2 text-xs sm:text-sm px-4 py-2.5 rounded-full border border-slateline text-steel hover:text-platinum hover:border-steel active:scale-[0.97] transition-all animate-fade-in-up"
           style={{ animationDelay: "0.25s" }}
         >
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
@@ -204,7 +205,7 @@ export default function Home() {
           {presentesFiltrados.map((p, i) => (
             <div
               key={p.id}
-              className="group bg-graphite border border-slateline rounded-2xl overflow-hidden flex flex-col transition-transform duration-150 active:scale-[0.98] hover:border-steel/50 animate-fade-in-up"
+              className="card-premium overflow-hidden flex flex-col animate-fade-in-up"
               style={{ animationDelay: `${Math.min(i, 6) * 0.05}s` }}
             >
               <div className="relative aspect-[4/3] bg-onyx">
@@ -294,7 +295,7 @@ export default function Home() {
                         <button
                           onClick={() => confirmarReserva(p.id)}
                           disabled={!nomeInput.trim() || enviando}
-                          className="flex-1 bg-silver text-onyx font-medium rounded-lg py-2.5 text-sm disabled:opacity-40"
+                          className="btn-silver flex-1 font-medium rounded-lg py-2.5 text-sm"
                         >
                           {enviando ? "Enviando…" : "Confirmar"}
                         </button>
