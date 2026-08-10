@@ -81,150 +81,205 @@ export default function Home() {
   }, [presentes, busca, filtro]);
 
   return (
-    <main className="min-h-screen px-6 py-16 md:py-24">
+    <main className="min-h-screen px-5 sm:px-6 py-12 sm:py-16 md:py-24">
       {/* Hero */}
-      <section className="max-w-2xl mx-auto text-center mb-20">
-        <p className="uppercase tracking-[0.3em] text-steel text-xs mb-4">
+      <section className="max-w-2xl mx-auto text-center mb-12 sm:mb-16 md:mb-20">
+        <div
+          className="mx-auto w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-slateline flex items-center justify-center mb-5 animate-fade-in-up"
+        >
+          <span className="font-display text-shimmer text-lg sm:text-xl">AS</span>
+        </div>
+        <p
+          className="uppercase tracking-[0.3em] text-steel text-[10px] sm:text-xs mb-3 animate-fade-in-up"
+          style={{ animationDelay: "0.05s" }}
+        >
           Convite
         </p>
-        <h1 className="font-display text-shimmer text-6xl md:text-8xl font-semibold leading-none mb-4">
+        <h1
+          className="font-display text-shimmer text-5xl sm:text-6xl md:text-8xl font-semibold leading-[0.95] mb-3 animate-fade-in-up"
+          style={{ animationDelay: "0.1s" }}
+        >
           Alana Sofia
         </h1>
-        <p className="text-steel text-sm md:text-base tracking-wide">
+        <p
+          className="text-steel text-xs sm:text-sm md:text-base tracking-[0.2em] uppercase animate-fade-in-up"
+          style={{ animationDelay: "0.15s" }}
+        >
           15 anos
         </p>
-        <div className="w-16 h-px bg-slateline mx-auto mt-8" />
+        <div
+          className="w-12 h-px bg-slateline mx-auto mt-6 sm:mt-8 animate-fade-in-up"
+          style={{ animationDelay: "0.2s" }}
+        />
       </section>
 
       {/* Lista de presentes */}
       <section className="max-w-4xl mx-auto">
-        <h2 className="font-display text-3xl md:text-4xl text-center mb-2">
+        <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-center mb-2">
           Lista de presentes
         </h2>
-        <p className="text-steel text-center text-sm mb-8">
+        <p className="text-steel text-center text-xs sm:text-sm mb-8 px-4">
           Escolha um presente para reservar. Cada item só pode ser escolhido por uma pessoa.
         </p>
 
-        {/* Busca e filtros */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-12">
-          <input
-            placeholder="Buscar presente..."
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-            className="w-full sm:w-64 bg-graphite border border-slateline rounded-lg px-4 py-2 text-sm text-platinum placeholder:text-steel focus:outline-none"
-          />
-          <div className="flex gap-2">
-            {(
-              [
-                { valor: "todos", rotulo: "Todos" },
-                { valor: "disponiveis", rotulo: "Disponíveis" },
-                { valor: "reservados", rotulo: "Reservados" },
-              ] as { valor: Filtro; rotulo: string }[]
-            ).map((opcao) => (
-              <button
-                key={opcao.valor}
-                onClick={() => setFiltro(opcao.valor)}
-                className={`px-4 py-2 rounded-lg text-sm border transition-colors ${
-                  filtro === opcao.valor
-                    ? "bg-silver text-onyx border-silver"
-                    : "border-slateline text-steel hover:text-platinum"
-                }`}
+        {/* Busca e filtros — fixos ao rolar, pra ficar sempre à mão no celular */}
+        <div className="sticky top-0 z-10 -mx-5 sm:-mx-6 px-5 sm:px-6 py-3 mb-8 bg-onyx/85 backdrop-blur-sm border-b border-slateline/60">
+          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row gap-2.5">
+            <div className="relative flex-1">
+              <svg
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-steel"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
               >
-                {opcao.rotulo}
-              </button>
-            ))}
+                <circle cx="11" cy="11" r="7" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+              <input
+                placeholder="Buscar presente..."
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+                className="w-full bg-graphite border border-slateline rounded-lg pl-10 pr-4 py-2.5 text-sm text-platinum placeholder:text-steel focus:outline-none"
+              />
+            </div>
+            <div className="flex gap-2 overflow-x-auto">
+              {(
+                [
+                  { valor: "todos", rotulo: "Todos" },
+                  { valor: "disponiveis", rotulo: "Disponíveis" },
+                  { valor: "reservados", rotulo: "Reservados" },
+                ] as { valor: Filtro; rotulo: string }[]
+              ).map((opcao) => (
+                <button
+                  key={opcao.valor}
+                  onClick={() => setFiltro(opcao.valor)}
+                  className={`px-4 py-2.5 rounded-lg text-sm border transition-colors whitespace-nowrap ${
+                    filtro === opcao.valor
+                      ? "bg-silver text-onyx border-silver"
+                      : "border-slateline text-steel hover:text-platinum"
+                  }`}
+                >
+                  {opcao.rotulo}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
         {carregando && (
-          <p className="text-center text-steel">Carregando presentes…</p>
+          <p className="text-center text-steel text-sm">Carregando presentes…</p>
         )}
 
         {!carregando && presentes.length === 0 && (
-          <p className="text-center text-steel">
+          <p className="text-center text-steel text-sm px-6">
             A lista de presentes ainda está sendo preparada. Volte em breve.
           </p>
         )}
 
         {!carregando && presentes.length > 0 && presentesFiltrados.length === 0 && (
-          <p className="text-center text-steel">
+          <p className="text-center text-steel text-sm px-6">
             Nenhum presente encontrado para essa busca/filtro.
           </p>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {presentesFiltrados.map((p) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {presentesFiltrados.map((p, i) => (
             <div
               key={p.id}
-              className="bg-graphite border border-slateline rounded-xl overflow-hidden flex flex-col"
+              className="group bg-graphite border border-slateline rounded-2xl overflow-hidden flex flex-col transition-transform duration-150 active:scale-[0.98] hover:border-steel/50 animate-fade-in-up"
+              style={{ animationDelay: `${Math.min(i, 6) * 0.05}s` }}
             >
-              {p.imagem_url ? (
-                <img
-                  src={p.imagem_url}
-                  alt={p.nome}
-                  className="w-full h-48 object-cover"
-                />
-              ) : (
-                <div className="w-full h-48 bg-onyx flex items-center justify-center text-steel text-sm">
-                  Sem imagem
-                </div>
-              )}
+              <div className="relative aspect-[4/3] bg-onyx">
+                {p.imagem_url ? (
+                  <img
+                    src={p.imagem_url}
+                    alt={p.nome}
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-steel text-sm">
+                    Sem imagem
+                  </div>
+                )}
+                {p.reservado && (
+                  <span className="absolute top-3 left-3 text-[11px] px-2.5 py-1 rounded-full bg-onyx/80 backdrop-blur-sm border border-slateline text-steel">
+                    Reservado
+                  </span>
+                )}
+              </div>
 
-              <div className="p-5 flex flex-col flex-1">
-                <h3 className="font-display text-xl mb-1">{p.nome}</h3>
+              <div className="p-4 sm:p-5 flex flex-col flex-1">
+                <h3 className="font-display text-lg sm:text-xl mb-1 leading-tight">
+                  {p.nome}
+                </h3>
                 {p.descricao && (
-                  <p className="text-steel text-sm mb-4">{p.descricao}</p>
+                  <p className="text-steel text-sm mb-3 leading-snug">{p.descricao}</p>
                 )}
 
-                <div className="flex gap-3 text-sm mb-4">
-                  {p.link_compra && (
-                    <a
-                      href={p.link_compra}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-silver-bright underline underline-offset-4"
-                    >
-                      Ver na loja
-                    </a>
-                  )}
-                  {p.maps_url && (
-                    <a
-                      href={p.maps_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-silver-bright underline underline-offset-4"
-                    >
-                      Ver localização
-                    </a>
-                  )}
-                </div>
+                {(p.link_compra || p.maps_url) && (
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {p.link_compra && (
+                      <a
+                        href={p.link_compra}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-slateline text-silver-bright hover:border-steel transition-colors"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                          <path d="M15 3h6v6" />
+                          <path d="M10 14 21 3" />
+                        </svg>
+                        Ver na loja
+                      </a>
+                    )}
+                    {p.maps_url && (
+                      <a
+                        href={p.maps_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-slateline text-silver-bright hover:border-steel transition-colors"
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                          <circle cx="12" cy="10" r="3" />
+                        </svg>
+                        Localização
+                      </a>
+                    )}
+                  </div>
+                )}
 
                 <div className="mt-auto">
                   {p.reservado ? (
-                    <div className="text-center py-2 rounded-lg bg-onyx border border-slateline text-steel text-sm">
+                    <div className="text-center py-2.5 rounded-lg bg-onyx border border-slateline text-steel text-sm">
                       Reservado{p.reservado_por ? ` por ${p.reservado_por}` : ""}
                     </div>
                   ) : reservando === p.id ? (
-                    <div className="space-y-2">
+                    <div className="space-y-2 animate-fade-in-up">
                       <input
                         type="text"
                         placeholder="Seu nome"
                         value={nomeInput}
                         onChange={(e) => setNomeInput(e.target.value)}
-                        className="w-full bg-onyx border border-slateline rounded-lg px-3 py-2 text-sm text-platinum placeholder:text-steel focus:outline-none"
+                        className="w-full bg-onyx border border-slateline rounded-lg px-3 py-2.5 text-sm text-platinum placeholder:text-steel focus:outline-none"
                       />
                       <textarea
                         placeholder="Mensagem de carinho (opcional)"
                         value={mensagemInput}
                         onChange={(e) => setMensagemInput(e.target.value)}
                         rows={2}
-                        className="w-full bg-onyx border border-slateline rounded-lg px-3 py-2 text-sm text-platinum placeholder:text-steel focus:outline-none resize-none"
+                        className="w-full bg-onyx border border-slateline rounded-lg px-3 py-2.5 text-sm text-platinum placeholder:text-steel focus:outline-none resize-none"
                       />
                       <div className="flex gap-2">
                         <button
                           onClick={() => confirmarReserva(p.id)}
                           disabled={!nomeInput.trim() || enviando}
-                          className="flex-1 bg-silver text-onyx font-medium rounded-lg py-2 text-sm disabled:opacity-40"
+                          className="flex-1 bg-silver text-onyx font-medium rounded-lg py-2.5 text-sm disabled:opacity-40"
                         >
                           {enviando ? "Enviando…" : "Confirmar"}
                         </button>
@@ -234,7 +289,7 @@ export default function Home() {
                             setNomeInput("");
                             setMensagemInput("");
                           }}
-                          className="px-3 rounded-lg border border-slateline text-steel text-sm"
+                          className="px-3.5 rounded-lg border border-slateline text-steel text-sm"
                         >
                           Cancelar
                         </button>
@@ -243,7 +298,7 @@ export default function Home() {
                   ) : (
                     <button
                       onClick={() => setReservando(p.id)}
-                      className="w-full bg-graphite border border-slateline hover:border-steel transition-colors rounded-lg py-2 text-sm text-platinum"
+                      className="w-full bg-graphite border border-slateline hover:border-steel active:scale-[0.98] transition-all rounded-lg py-2.5 text-sm text-platinum"
                     >
                       Reservar presente
                     </button>
