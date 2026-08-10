@@ -5,6 +5,7 @@
 :root {
   --font-display: "Cormorant Garamond", serif;
   --font-body: "Manrope", sans-serif;
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html {
@@ -52,6 +53,66 @@ body {
   }
 }
 
+/* Card com profundidade sutil — usado em toda a superfície escura */
+.card-premium {
+  background: linear-gradient(180deg, #1F232B 0%, #1C1F26 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 18px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 14px 32px -18px rgba(0, 0, 0, 0.75);
+  transition: border-color 0.25s var(--ease-premium), box-shadow 0.25s var(--ease-premium), transform 0.25s var(--ease-premium);
+}
+
+.card-premium:hover {
+  border-color: rgba(199, 204, 214, 0.3);
+}
+
+.card-premium:active {
+  transform: scale(0.99);
+}
+
+/* Botão sólido com acabamento metálico */
+.btn-silver {
+  background: linear-gradient(180deg, #F1F3F6 0%, #C7CCD6 100%);
+  color: #0B0C10;
+  border: none;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 10px 24px -12px rgba(0, 0, 0, 0.55);
+  transition: transform 0.2s var(--ease-premium), box-shadow 0.2s var(--ease-premium);
+}
+
+.btn-silver:active {
+  transform: scale(0.97);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset, 0 4px 12px -8px rgba(0, 0, 0, 0.5);
+}
+
+.btn-silver:disabled {
+  opacity: 0.4;
+  transform: none;
+}
+
+/* Divisor ornamental com traços saindo do centro */
+.divider-flourish {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.divider-flourish::before,
+.divider-flourish::after {
+  content: "";
+  height: 1px;
+  width: 28px;
+  background: linear-gradient(90deg, transparent, #3A3F4B);
+}
+
+.divider-flourish::after {
+  background: linear-gradient(90deg, #3A3F4B, transparent);
+}
+
 /* Respeita quem prefere menos animação */
 @media (prefers-reduced-motion: reduce) {
   .text-shimmer {
@@ -60,6 +121,10 @@ body {
   }
   .animate-fade-in-up {
     animation: none;
+  }
+  .card-premium,
+  .btn-silver {
+    transition: none;
   }
   html {
     scroll-behavior: auto;
