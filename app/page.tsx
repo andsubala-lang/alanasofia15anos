@@ -23,7 +23,7 @@ export default function Home() {
   const [nomeInput, setNomeInput] = useState("");
   const [mensagemInput, setMensagemInput] = useState("");
   const [enviando, setEnviando] = useState(false);
-  const [reservadoAgora, setReservadoAgora] = useState<string | null>(null);
+  const [modalReserva, setModalReserva] = useState<{ nome: string } | null>(null);
 
   const [busca, setBusca] = useState("");
   const [filtro, setFiltro] = useState<Filtro>("disponiveis");
@@ -33,6 +33,13 @@ export default function Home() {
     carregarPresentes();
     registrarVisita();
   }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = modalReserva ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [modalReserva]);
 
   async function carregarPresentes() {
     setCarregando(true);
@@ -49,7 +56,7 @@ export default function Home() {
     await supabase.from("alana_visitas").insert({});
   }
 
-  async function confirmarReserva(id: string) {
+  async function confirmarReserva(p: Presente) {
     if (!nomeInput.trim()) return;
     setEnviando(true);
     const { data, error } = await supabase
@@ -60,7 +67,7 @@ export default function Home() {
         reservado_mensagem: mensagemInput.trim() || null,
         reservado_em: new Date().toISOString(),
       })
-      .eq("id", id)
+      .eq("id", p.id)
       .eq("reservado", false)
       .select()
       .maybeSingle();
@@ -68,15 +75,12 @@ export default function Home() {
     setEnviando(false);
 
     if (!error && data) {
-      // Reserva confirmada de verdade
       setReservando(null);
       setNomeInput("");
       setMensagemInput("");
-      setReservadoAgora(id);
       carregarPresentes();
-      setTimeout(() => setReservadoAgora(null), 4000);
+      setModalReserva({ nome: p.nome });
     } else {
-      // Alguém reservou esse mesmo presente um instante antes
       setReservando(null);
       setNomeInput("");
       setMensagemInput("");
@@ -90,22 +94,50 @@ export default function Home() {
     return presentes
       .filter((p) => p.nome.toLowerCase().includes(busca.toLowerCase()))
       .filter((p) => {
-        if (p.id === reservadoAgora) return true; // sempre mostra o que acabou de reservar
         if (filtro === "disponiveis") return !p.reservado;
         if (filtro === "reservados") return p.reservado;
         return true;
       });
-  }, [presentes, busca, filtro, reservadoAgora]);
-
-  const lineClamp2: React.CSSProperties = {
-    display: "-webkit-box",
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: "vertical",
-    overflow: "hidden",
-  };
+  }, [presentes, busca, filtro]);
 
   return (
     <main className="min-h-screen px-4 sm:px-6 py-12 sm:py-16 md:py-24">
+      {/* Modal de agradecimento */}
+      {modalReserva && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-5 bg-onyx/90 backdrop-blur-sm animate-fade-in-up">
+          <div className="card-premium max-w-sm w-full p-6 sm:p-8 text-center animate-celebrate">
+            <div className="mx-auto w-14 h-14 rounded-full border border-slateline flex items-center justify-center mb-4">
+              <svg
+                width="26"
+                height="26"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                className="text-silver-bright"
+              >
+                <circle cx="12" cy="12" r="9" />
+                <path d="m8 12 3 3 5-6" />
+              </svg>
+            </div>
+            <h2 className="font-display text-2xl sm:text-3xl mb-2">
+              Presente reservado!
+            </h2>
+            <p className="text-steel text-xs sm:text-sm mb-1">Você reservou:</p>
+            <p className="text-platinum font-medium mb-5">{modalReserva.nome}</p>
+            <p className="text-steel text-xs sm:text-sm mb-6 leading-relaxed">
+              Obrigada por fazer parte dos 15 anos da Alana Sofia. ✦
+            </p>
+            <button
+              onClick={() => setModalReserva(null)}
+              className="btn-silver w-full rounded-lg py-2.5 text-sm font-medium"
+            >
+              Voltar para a lista
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Hero */}
       <section className="max-w-2xl mx-auto text-center mb-12 sm:mb-16 md:mb-20">
         <div className="mx-auto w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-slateline flex items-center justify-center mb-5 animate-fade-in-up">
@@ -259,75 +291,42 @@ export default function Home() {
               </div>
 
               <div className="p-3 sm:p-4 flex flex-col flex-1">
-                <h3 className="font-display text-base sm:text-lg mb-1 leading-tight">
+                <h3 className="font-display text-base sm:text-lg mb-3 leading-tight">
                   {p.nome}
                 </h3>
-                {p.descricao && (
-                  <p
-                    className="text-steel text-xs sm:text-sm mb-2.5 leading-snug"
-                    style={lineClamp2}
-                  >
-                    {p.descricao}
-                  </p>
-                )}
 
-                {(p.link_compra || p.maps_url) && (
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    {p.link_compra && (
-                      <a
-                        href={p.link_compra}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[10px] sm:text-xs px-2 py-1 rounded-full border border-slateline text-silver-bright hover:border-steel transition-colors"
-                      >
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                          <path d="M15 3h6v6" />
-                          <path d="M10 14 21 3" />
-                        </svg>
-                        Loja
-                      </a>
-                    )}
-                    {p.maps_url && (
-                      <a
-                        href={p.maps_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[10px] sm:text-xs px-2 py-1 rounded-full border border-slateline text-silver-bright hover:border-steel transition-colors"
-                      >
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                          <circle cx="12" cy="10" r="3" />
-                        </svg>
-                        Local
-                      </a>
-                    )}
-                  </div>
-                )}
-
-                <div className="mt-auto">
-                  {reservadoAgora === p.id ? (
-                    <div className="text-center py-3 rounded-lg bg-onyx border border-silver/40 animate-celebrate">
-                      <svg
-                        width="22"
-                        height="22"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.75"
-                        className="mx-auto mb-1 text-silver-bright"
-                      >
-                        <circle cx="12" cy="12" r="9" />
-                        <path d="m8 12 3 3 5-6" />
+                <div className="mt-auto space-y-2">
+                  {p.link_compra && (
+                    <a
+                      href={p.link_compra}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full inline-flex items-center justify-center gap-1.5 text-xs sm:text-sm px-3 py-2 rounded-lg border border-slateline text-platinum hover:border-steel active:scale-[0.98] transition-all"
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <path d="M15 3h6v6" />
+                        <path d="M10 14 21 3" />
                       </svg>
-                      <p className="text-xs sm:text-sm text-silver-bright font-medium">
-                        Presente reservado!
-                      </p>
-                      <p className="text-[10px] sm:text-xs text-steel mt-0.5">
-                        Obrigada por escolher esse presente
-                      </p>
-                    </div>
-                  ) : p.reservado ? (
+                      Ver na loja
+                    </a>
+                  )}
+                  {p.maps_url && (
+                    <a
+                      href={p.maps_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full inline-flex items-center justify-center gap-1.5 text-xs sm:text-sm px-3 py-2 rounded-lg border border-slateline text-platinum hover:border-steel active:scale-[0.98] transition-all"
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                        <circle cx="12" cy="10" r="3" />
+                      </svg>
+                      Localização
+                    </a>
+                  )}
+
+                  {p.reservado ? (
                     <div className="text-center py-2.5 rounded-lg bg-onyx border border-slateline text-steel text-xs sm:text-sm">
                       Reservado
                     </div>
@@ -349,7 +348,7 @@ export default function Home() {
                       />
                       <div className="flex gap-1.5">
                         <button
-                          onClick={() => confirmarReserva(p.id)}
+                          onClick={() => confirmarReserva(p)}
                           disabled={!nomeInput.trim() || enviando}
                           className="btn-silver flex-1 font-medium rounded-lg py-2 text-xs sm:text-sm"
                         >
