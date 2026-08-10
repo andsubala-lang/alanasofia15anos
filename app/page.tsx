@@ -27,6 +27,7 @@ export default function Home() {
 
   const [busca, setBusca] = useState("");
   const [filtro, setFiltro] = useState<Filtro>("disponiveis");
+  const [aviso, setAviso] = useState<string | null>(null);
 
   useEffect(() => {
     carregarPresentes();
@@ -51,7 +52,7 @@ export default function Home() {
   async function confirmarReserva(id: string) {
     if (!nomeInput.trim()) return;
     setEnviando(true);
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("alana_presentes")
       .update({
         reservado: true,
@@ -60,16 +61,28 @@ export default function Home() {
         reservado_em: new Date().toISOString(),
       })
       .eq("id", id)
-      .eq("reservado", false);
+      .eq("reservado", false)
+      .select()
+      .maybeSingle();
 
     setEnviando(false);
-    if (!error) {
+
+    if (!error && data) {
+      // Reserva confirmada de verdade
       setReservando(null);
       setNomeInput("");
       setMensagemInput("");
       setReservadoAgora(id);
       carregarPresentes();
       setTimeout(() => setReservadoAgora(null), 4000);
+    } else {
+      // Alguém reservou esse mesmo presente um instante antes
+      setReservando(null);
+      setNomeInput("");
+      setMensagemInput("");
+      setAviso("Ops! Esse presente acabou de ser reservado por outra pessoa. A lista foi atualizada.");
+      carregarPresentes();
+      setTimeout(() => setAviso(null), 5000);
     }
   }
 
@@ -77,11 +90,12 @@ export default function Home() {
     return presentes
       .filter((p) => p.nome.toLowerCase().includes(busca.toLowerCase()))
       .filter((p) => {
+        if (p.id === reservadoAgora) return true; // sempre mostra o que acabou de reservar
         if (filtro === "disponiveis") return !p.reservado;
         if (filtro === "reservados") return p.reservado;
         return true;
       });
-  }, [presentes, busca, filtro]);
+  }, [presentes, busca, filtro, reservadoAgora]);
 
   const lineClamp2: React.CSSProperties = {
     display: "-webkit-box",
@@ -194,6 +208,12 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        {aviso && (
+          <div className="max-w-md mx-auto mb-6 text-center text-xs sm:text-sm text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-2.5 animate-fade-in-up">
+            {aviso}
+          </div>
+        )}
 
         {carregando && (
           <p className="text-center text-steel text-sm">Carregando presentes…</p>
