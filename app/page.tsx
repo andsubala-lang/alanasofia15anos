@@ -14,7 +14,7 @@ type Presente = {
   reservado_por: string | null;
 };
 
-type Filtro = "todos" | "disponiveis" | "reservados";
+type Filtro = "disponiveis" | "todos" | "reservados";
 
 export default function Home() {
   const [presentes, setPresentes] = useState<Presente[]>([]);
@@ -23,9 +23,10 @@ export default function Home() {
   const [nomeInput, setNomeInput] = useState("");
   const [mensagemInput, setMensagemInput] = useState("");
   const [enviando, setEnviando] = useState(false);
+  const [reservadoAgora, setReservadoAgora] = useState<string | null>(null);
 
   const [busca, setBusca] = useState("");
-  const [filtro, setFiltro] = useState<Filtro>("todos");
+  const [filtro, setFiltro] = useState<Filtro>("disponiveis");
 
   useEffect(() => {
     carregarPresentes();
@@ -66,7 +67,9 @@ export default function Home() {
       setReservando(null);
       setNomeInput("");
       setMensagemInput("");
+      setReservadoAgora(id);
       carregarPresentes();
+      setTimeout(() => setReservadoAgora(null), 4000);
     }
   }
 
@@ -80,8 +83,15 @@ export default function Home() {
       });
   }, [presentes, busca, filtro]);
 
+  const lineClamp2: React.CSSProperties = {
+    display: "-webkit-box",
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+  };
+
   return (
-    <main className="min-h-screen px-5 sm:px-6 py-12 sm:py-16 md:py-24">
+    <main className="min-h-screen px-4 sm:px-6 py-12 sm:py-16 md:py-24">
       {/* Hero */}
       <section className="max-w-2xl mx-auto text-center mb-12 sm:mb-16 md:mb-20">
         <div className="mx-auto w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-slateline flex items-center justify-center mb-5 animate-fade-in-up">
@@ -139,7 +149,7 @@ export default function Home() {
         </p>
 
         {/* Busca e filtros — fixos ao rolar, pra ficar sempre à mão no celular */}
-        <div className="sticky top-0 z-10 -mx-5 sm:-mx-6 px-5 sm:px-6 py-3 mb-8 bg-onyx/85 backdrop-blur-sm border-b border-slateline/60">
+        <div className="sticky top-0 z-10 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3 mb-6 bg-onyx/85 backdrop-blur-sm border-b border-slateline/60">
           <div className="max-w-4xl mx-auto flex flex-col sm:flex-row gap-2.5">
             <div className="relative flex-1">
               <svg
@@ -164,8 +174,8 @@ export default function Home() {
             <div className="flex gap-2 overflow-x-auto">
               {(
                 [
-                  { valor: "todos", rotulo: "Todos" },
                   { valor: "disponiveis", rotulo: "Disponíveis" },
+                  { valor: "todos", rotulo: "Todos" },
                   { valor: "reservados", rotulo: "Reservados" },
                 ] as { valor: Filtro; rotulo: string }[]
               ).map((opcao) => (
@@ -201,14 +211,14 @@ export default function Home() {
           </p>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {presentesFiltrados.map((p, i) => (
             <div
               key={p.id}
               className="card-premium overflow-hidden flex flex-col animate-fade-in-up"
               style={{ animationDelay: `${Math.min(i, 6) * 0.05}s` }}
             >
-              <div className="relative aspect-[4/3] bg-onyx">
+              <div className="relative aspect-square bg-onyx">
                 {p.imagem_url ? (
                   <img
                     src={p.imagem_url}
@@ -217,40 +227,45 @@ export default function Home() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-steel text-sm">
+                  <div className="w-full h-full flex items-center justify-center text-steel text-xs">
                     Sem imagem
                   </div>
                 )}
                 {p.reservado && (
-                  <span className="absolute top-3 left-3 text-[11px] px-2.5 py-1 rounded-full bg-onyx/80 backdrop-blur-sm border border-slateline text-steel">
+                  <span className="absolute top-2 left-2 text-[10px] px-2 py-0.5 rounded-full bg-onyx/80 backdrop-blur-sm border border-slateline text-steel">
                     Reservado
                   </span>
                 )}
               </div>
 
-              <div className="p-4 sm:p-5 flex flex-col flex-1">
-                <h3 className="font-display text-lg sm:text-xl mb-1 leading-tight">
+              <div className="p-3 sm:p-4 flex flex-col flex-1">
+                <h3 className="font-display text-base sm:text-lg mb-1 leading-tight">
                   {p.nome}
                 </h3>
                 {p.descricao && (
-                  <p className="text-steel text-sm mb-3 leading-snug">{p.descricao}</p>
+                  <p
+                    className="text-steel text-xs sm:text-sm mb-2.5 leading-snug"
+                    style={lineClamp2}
+                  >
+                    {p.descricao}
+                  </p>
                 )}
 
                 {(p.link_compra || p.maps_url) && (
-                  <div className="flex flex-wrap gap-2 mb-4">
+                  <div className="flex flex-wrap gap-1.5 mb-3">
                     {p.link_compra && (
                       <a
                         href={p.link_compra}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-slateline text-silver-bright hover:border-steel transition-colors"
+                        className="inline-flex items-center gap-1 text-[10px] sm:text-xs px-2 py-1 rounded-full border border-slateline text-silver-bright hover:border-steel transition-colors"
                       >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                           <path d="M15 3h6v6" />
                           <path d="M10 14 21 3" />
                         </svg>
-                        Ver na loja
+                        Loja
                       </a>
                     )}
                     {p.maps_url && (
@@ -258,22 +273,43 @@ export default function Home() {
                         href={p.maps_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-slateline text-silver-bright hover:border-steel transition-colors"
+                        className="inline-flex items-center gap-1 text-[10px] sm:text-xs px-2 py-1 rounded-full border border-slateline text-silver-bright hover:border-steel transition-colors"
                       >
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                           <circle cx="12" cy="10" r="3" />
                         </svg>
-                        Localização
+                        Local
                       </a>
                     )}
                   </div>
                 )}
 
                 <div className="mt-auto">
-                  {p.reservado ? (
-                    <div className="text-center py-2.5 rounded-lg bg-onyx border border-slateline text-steel text-sm">
-                      Reservado{p.reservado_por ? ` por ${p.reservado_por}` : ""}
+                  {reservadoAgora === p.id ? (
+                    <div className="text-center py-3 rounded-lg bg-onyx border border-silver/40 animate-celebrate">
+                      <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.75"
+                        className="mx-auto mb-1 text-silver-bright"
+                      >
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="m8 12 3 3 5-6" />
+                      </svg>
+                      <p className="text-xs sm:text-sm text-silver-bright font-medium">
+                        Presente reservado!
+                      </p>
+                      <p className="text-[10px] sm:text-xs text-steel mt-0.5">
+                        Obrigada por escolher esse presente
+                      </p>
+                    </div>
+                  ) : p.reservado ? (
+                    <div className="text-center py-2.5 rounded-lg bg-onyx border border-slateline text-steel text-xs sm:text-sm">
+                      Reservado
                     </div>
                   ) : reservando === p.id ? (
                     <div className="space-y-2 animate-fade-in-up">
@@ -282,20 +318,20 @@ export default function Home() {
                         placeholder="Seu nome"
                         value={nomeInput}
                         onChange={(e) => setNomeInput(e.target.value)}
-                        className="w-full bg-onyx border border-slateline rounded-lg px-3 py-2.5 text-sm text-platinum placeholder:text-steel focus:outline-none"
+                        className="w-full bg-onyx border border-slateline rounded-lg px-3 py-2 text-xs sm:text-sm text-platinum placeholder:text-steel focus:outline-none"
                       />
                       <textarea
                         placeholder="Mensagem de carinho (opcional)"
                         value={mensagemInput}
                         onChange={(e) => setMensagemInput(e.target.value)}
                         rows={2}
-                        className="w-full bg-onyx border border-slateline rounded-lg px-3 py-2.5 text-sm text-platinum placeholder:text-steel focus:outline-none resize-none"
+                        className="w-full bg-onyx border border-slateline rounded-lg px-3 py-2 text-xs sm:text-sm text-platinum placeholder:text-steel focus:outline-none resize-none"
                       />
-                      <div className="flex gap-2">
+                      <div className="flex gap-1.5">
                         <button
                           onClick={() => confirmarReserva(p.id)}
                           disabled={!nomeInput.trim() || enviando}
-                          className="btn-silver flex-1 font-medium rounded-lg py-2.5 text-sm"
+                          className="btn-silver flex-1 font-medium rounded-lg py-2 text-xs sm:text-sm"
                         >
                           {enviando ? "Enviando…" : "Confirmar"}
                         </button>
@@ -305,7 +341,7 @@ export default function Home() {
                             setNomeInput("");
                             setMensagemInput("");
                           }}
-                          className="px-3.5 rounded-lg border border-slateline text-steel text-sm"
+                          className="px-3 rounded-lg border border-slateline text-steel text-xs sm:text-sm"
                         >
                           Cancelar
                         </button>
@@ -314,9 +350,9 @@ export default function Home() {
                   ) : (
                     <button
                       onClick={() => setReservando(p.id)}
-                      className="w-full bg-graphite border border-slateline hover:border-steel active:scale-[0.98] transition-all rounded-lg py-2.5 text-sm text-platinum"
+                      className="w-full bg-graphite border border-slateline hover:border-steel active:scale-[0.98] transition-all rounded-lg py-2 text-xs sm:text-sm text-platinum"
                     >
-                      Reservar presente
+                      Reservar
                     </button>
                   )}
                 </div>
