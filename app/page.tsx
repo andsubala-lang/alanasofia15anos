@@ -171,12 +171,14 @@ export default function Home() {
         <div className="mx-auto w-11 h-11 sm:w-12 sm:h-12 rounded-full border border-slateline flex items-center justify-center mb-4 animate-fade-in-up">
           <span className="font-display text-shimmer text-base sm:text-lg">AS</span>
         </div>
-        <p
-          className="text-steel text-xs sm:text-sm tracking-[0.15em] uppercase mb-7 animate-fade-in-up"
-          style={{ animationDelay: "0.05s" }}
-        >
-          Alana Sofia · 15 anos
-        </p>
+        <div className="mb-7 animate-fade-in-up" style={{ animationDelay: "0.05s" }}>
+          <p className="font-display text-shimmer text-xl sm:text-2xl font-medium mb-1.5">
+            Alana Sofia
+          </p>
+          <p className="text-steel text-[11px] sm:text-xs tracking-[0.25em] uppercase">
+            15 anos
+          </p>
+        </div>
         <div className="mb-4 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
           <h1 className="font-display text-shimmer text-4xl sm:text-5xl md:text-7xl font-semibold leading-[0.95]">
             Lista de presentes
