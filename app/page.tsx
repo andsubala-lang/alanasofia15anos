@@ -177,12 +177,11 @@ export default function Home() {
         >
           Alana Sofia · 15 anos
         </p>
-        <h1
-          className="font-display text-shimmer text-4xl sm:text-5xl md:text-7xl font-semibold leading-[0.95] mb-4 animate-fade-in-up"
-          style={{ animationDelay: "0.1s" }}
-        >
-          Lista de presentes
-        </h1>
+        <div className="mb-4 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
+          <h1 className="font-display text-shimmer text-4xl sm:text-5xl md:text-7xl font-semibold leading-[0.95]">
+            Lista de presentes
+          </h1>
+        </div>
 
         <div className="mb-6 animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
           <div className="divider-flourish">
