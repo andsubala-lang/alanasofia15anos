@@ -42,17 +42,44 @@ const itens = [
   },
 ];
 
-export default function AdminNav() {
+export default function AdminNav({
+  variant = "sidebar",
+}: {
+  variant?: "sidebar" | "mobile";
+}) {
   const pathname = usePathname();
+
+  const ehAtivo = (href: string) =>
+    href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
+
+  if (variant === "mobile") {
+    return (
+      <nav className="flex items-center gap-2 overflow-x-auto">
+        {itens.map((item) => {
+          const ativo = ehAtivo(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-full text-sm whitespace-nowrap border transition-colors ${
+                ativo
+                  ? "bg-silver text-onyx border-silver"
+                  : "border-slateline text-steel hover:text-platinum"
+              }`}
+            >
+              {item.icon}
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+    );
+  }
 
   return (
     <nav className="flex flex-col gap-1">
       {itens.map((item) => {
-        const ativo =
-          item.href === "/admin"
-            ? pathname === "/admin"
-            : pathname.startsWith(item.href);
-
+        const ativo = ehAtivo(item.href);
         return (
           <Link
             key={item.href}
