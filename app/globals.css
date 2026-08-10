@@ -30,7 +30,7 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: -3;
   pointer-events: none;
   background-image:
     radial-gradient(circle at 50% 8%, #323844 0%, #0B0C10 62%),
