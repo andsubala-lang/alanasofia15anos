@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, FormEvent, useMemo } from "react";
+import { useToast } from "../ToastProvider";
 
 type Presente = {
   id: string;
@@ -25,7 +26,9 @@ const vazio = {
   ordem: 0,
 };
 
-export default function AdminDashboard() {
+export default function PresentesPage() {
+  const { showToast } = useToast();
+
   const [presentes, setPresentes] = useState<Presente[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [modoClaro, setModoClaro] = useState(false);
@@ -35,7 +38,6 @@ export default function AdminDashboard() {
   const [erro, setErro] = useState("");
   const [mostrarForm, setMostrarForm] = useState(false);
 
-  // Controles da tabela
   const [busca, setBusca] = useState("");
   const [reservadosPrimeiro, setReservadosPrimeiro] = useState(false);
 
@@ -95,22 +97,51 @@ export default function AdminDashboard() {
     setSalvando(false);
 
     if (res.ok) {
+      showToast(editandoId ? "Presente atualizado" : "Presente adicionado");
       cancelarEdicao();
       carregar();
     } else {
       const data = await res.json();
       setErro(data.error || "Erro ao salvar");
+      showToast("Erro ao salvar presente", "erro");
     }
   }
 
   async function apagar(id: string) {
     if (!confirm("Apagar este presente da lista?")) return;
-    await fetch(`/api/admin/presentes/${id}`, { method: "DELETE" });
-    carregar();
+    const res = await fetch(`/api/admin/presentes/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      showToast("Presente apagado");
+      carregar();
+    } else {
+      showToast("Erro ao apagar presente", "erro");
+    }
+  }
+
+  async function duplicar(p: Presente) {
+    const res = await fetch("/api/admin/presentes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nome: `${p.nome} (cópia)`,
+        descricao: p.descricao,
+        imagem_url: p.imagem_url,
+        link_compra: p.link_compra,
+        maps_url: p.maps_url,
+        ordem: p.ordem,
+      }),
+    });
+
+    if (res.ok) {
+      showToast("Presente duplicado");
+      carregar();
+    } else {
+      showToast("Erro ao duplicar presente", "erro");
+    }
   }
 
   async function desfazerReserva(id: string) {
-    await fetch(`/api/admin/presentes/${id}`, {
+    const res = await fetch(`/api/admin/presentes/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -120,7 +151,12 @@ export default function AdminDashboard() {
         reservado_em: null,
       }),
     });
-    carregar();
+    if (res.ok) {
+      showToast("Reserva desfeita");
+      carregar();
+    } else {
+      showToast("Erro ao desfazer reserva", "erro");
+    }
   }
 
   function exportarCSV() {
@@ -146,6 +182,7 @@ export default function AdminDashboard() {
     a.download = "presentes-alana-sofia.csv";
     a.click();
     URL.revokeObjectURL(url);
+    showToast("CSV exportado");
   }
 
   const listaExibida = useMemo(() => {
@@ -180,7 +217,6 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      {/* Barra de ferramentas: busca, ordenar, exportar, novo */}
       <div className="flex flex-col md:flex-row gap-3 mb-6">
         <input
           placeholder="Buscar presente..."
@@ -211,7 +247,6 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      {/* Formulário de criação/edição */}
       {mostrarForm && (
         <form
           onSubmit={handleSubmit}
@@ -275,7 +310,6 @@ export default function AdminDashboard() {
         </form>
       )}
 
-      {/* Tabela de presentes */}
       {carregando ? (
         <p className="text-steel">Carregando…</p>
       ) : presentes.length === 0 ? (
@@ -330,7 +364,7 @@ export default function AdminDashboard() {
                       : "—"}
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-wrap">
                       {p.reservado && (
                         <button
                           onClick={() => desfazerReserva(p.id)}
@@ -344,6 +378,12 @@ export default function AdminDashboard() {
                         className={`border rounded-lg px-2.5 py-1 text-xs ${border}`}
                       >
                         Editar
+                      </button>
+                      <button
+                        onClick={() => duplicar(p)}
+                        className={`border rounded-lg px-2.5 py-1 text-xs ${border}`}
+                      >
+                        Duplicar
                       </button>
                       <button
                         onClick={() => apagar(p.id)}
