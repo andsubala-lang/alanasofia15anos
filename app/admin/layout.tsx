@@ -15,6 +15,9 @@ export default function AdminLayout({
           </Link>
           <nav className="flex items-center gap-4 text-sm">
             <Link href="/admin" className="text-steel hover:text-platinum">
+              Dashboard
+            </Link>
+            <Link href="/admin/presentes" className="text-steel hover:text-platinum">
               Presentes
             </Link>
             <Link href="/admin/mensagens" className="text-steel hover:text-platinum">
