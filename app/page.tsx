@@ -121,7 +121,8 @@ export default function Home() {
     <main className="min-h-screen px-4 sm:px-6 py-12 sm:py-16 md:py-24">
       {/* Marca d'água do monograma, bem apagada, atrás de tudo */}
       <div
-        className="fixed inset-0 -z-10 flex items-center justify-center overflow-hidden pointer-events-none select-none"
+        className="fixed inset-0 flex items-center justify-center overflow-hidden pointer-events-none select-none"
+        style={{ zIndex: -2 }}
         aria-hidden="true"
       >
         <span
@@ -133,7 +134,7 @@ export default function Home() {
       </div>
 
       {/* Glitter sutil no fundo */}
-      <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden" aria-hidden="true">
+      <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: -1 }} aria-hidden="true">
         {pontosGlitter.map((s, i) => (
           <span
             key={i}
