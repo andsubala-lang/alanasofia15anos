@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 type Presente = {
@@ -14,6 +14,8 @@ type Presente = {
   reservado_por: string | null;
 };
 
+type Filtro = "todos" | "disponiveis" | "reservados";
+
 export default function Home() {
   const [presentes, setPresentes] = useState<Presente[]>([]);
   const [carregando, setCarregando] = useState(true);
@@ -21,6 +23,9 @@ export default function Home() {
   const [nomeInput, setNomeInput] = useState("");
   const [mensagemInput, setMensagemInput] = useState("");
   const [enviando, setEnviando] = useState(false);
+
+  const [busca, setBusca] = useState("");
+  const [filtro, setFiltro] = useState<Filtro>("todos");
 
   useEffect(() => {
     carregarPresentes();
@@ -65,6 +70,16 @@ export default function Home() {
     }
   }
 
+  const presentesFiltrados = useMemo(() => {
+    return presentes
+      .filter((p) => p.nome.toLowerCase().includes(busca.toLowerCase()))
+      .filter((p) => {
+        if (filtro === "disponiveis") return !p.reservado;
+        if (filtro === "reservados") return p.reservado;
+        return true;
+      });
+  }, [presentes, busca, filtro]);
+
   return (
     <main className="min-h-screen px-6 py-16 md:py-24">
       {/* Hero */}
@@ -86,9 +101,40 @@ export default function Home() {
         <h2 className="font-display text-3xl md:text-4xl text-center mb-2">
           Lista de presentes
         </h2>
-        <p className="text-steel text-center text-sm mb-12">
+        <p className="text-steel text-center text-sm mb-8">
           Escolha um presente para reservar. Cada item só pode ser escolhido por uma pessoa.
         </p>
+
+        {/* Busca e filtros */}
+        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-12">
+          <input
+            placeholder="Buscar presente..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            className="w-full sm:w-64 bg-graphite border border-slateline rounded-lg px-4 py-2 text-sm text-platinum placeholder:text-steel focus:outline-none"
+          />
+          <div className="flex gap-2">
+            {(
+              [
+                { valor: "todos", rotulo: "Todos" },
+                { valor: "disponiveis", rotulo: "Disponíveis" },
+                { valor: "reservados", rotulo: "Reservados" },
+              ] as { valor: Filtro; rotulo: string }[]
+            ).map((opcao) => (
+              <button
+                key={opcao.valor}
+                onClick={() => setFiltro(opcao.valor)}
+                className={`px-4 py-2 rounded-lg text-sm border transition-colors ${
+                  filtro === opcao.valor
+                    ? "bg-silver text-onyx border-silver"
+                    : "border-slateline text-steel hover:text-platinum"
+                }`}
+              >
+                {opcao.rotulo}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {carregando && (
           <p className="text-center text-steel">Carregando presentes…</p>
@@ -100,8 +146,14 @@ export default function Home() {
           </p>
         )}
 
+        {!carregando && presentes.length > 0 && presentesFiltrados.length === 0 && (
+          <p className="text-center text-steel">
+            Nenhum presente encontrado para essa busca/filtro.
+          </p>
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {presentes.map((p) => (
+          {presentesFiltrados.map((p) => (
             <div
               key={p.id}
               className="bg-graphite border border-slateline rounded-xl overflow-hidden flex flex-col"
