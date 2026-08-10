@@ -100,8 +100,36 @@ export default function Home() {
       });
   }, [presentes, busca, filtro]);
 
+  const pontosGlitter = [
+    { top: "6%", left: "15%", delay: "0s" },
+    { top: "11%", left: "82%", delay: "0.4s" },
+    { top: "18%", left: "6%", delay: "0.9s" },
+    { top: "24%", left: "92%", delay: "1.3s" },
+    { top: "32%", left: "25%", delay: "1.7s" },
+    { top: "38%", left: "70%", delay: "0.2s" },
+    { top: "46%", left: "45%", delay: "2.1s" },
+    { top: "53%", left: "10%", delay: "0.7s" },
+    { top: "59%", left: "88%", delay: "1.1s" },
+    { top: "67%", left: "58%", delay: "1.9s" },
+    { top: "74%", left: "30%", delay: "0.5s" },
+    { top: "82%", left: "78%", delay: "1.5s" },
+    { top: "89%", left: "18%", delay: "1.0s" },
+    { top: "94%", left: "52%", delay: "0.3s" },
+  ];
+
   return (
     <main className="min-h-screen px-4 sm:px-6 py-12 sm:py-16 md:py-24">
+      {/* Glitter sutil no fundo */}
+      <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden" aria-hidden="true">
+        {pontosGlitter.map((s, i) => (
+          <span
+            key={i}
+            className="sparkle-dot"
+            style={{ top: s.top, left: s.left, animationDelay: s.delay }}
+          />
+        ))}
+      </div>
+
       {/* Modal de agradecimento */}
       {modalReserva && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-5 bg-onyx/90 backdrop-blur-sm animate-fade-in-up">
