@@ -17,8 +17,9 @@ body {
   background-color: #0B0C10;
   background-image:
     radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.012) 0px, rgba(255, 255, 255, 0.012) 1px, transparent 1px, transparent 3px);
-  background-size: 22px 22px, auto;
+    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.014) 0px, rgba(255, 255, 255, 0.014) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(25deg, rgba(255, 255, 255, 0.009) 0px, rgba(255, 255, 255, 0.009) 1px, transparent 1px, transparent 4px);
+  background-size: 22px 22px, auto, auto;
   min-height: 100vh;
   -webkit-tap-highlight-color: transparent;
   position: relative;
@@ -32,18 +33,21 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background-image:
-    radial-gradient(circle at 50% 8%, #2E333D 0%, #0B0C10 60%),
-    radial-gradient(circle at 50% 100%, #1C1F26 0%, transparent 55%),
-    radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.55) 100%);
+    radial-gradient(circle at 50% 8%, #323844 0%, #0B0C10 62%),
+    radial-gradient(circle at 50% 100%, #1F232B 0%, transparent 55%),
+    radial-gradient(ellipse at center, transparent 38%, rgba(0, 0, 0, 0.6) 100%);
 }
 
-/* Moldura fina prateada ao redor de toda a tela */
+/* Moldura de duas linhas ao redor de toda a tela */
 body::after {
   content: "";
   position: fixed;
   inset: 10px;
-  border: 1px solid rgba(199, 204, 214, 0.12);
+  border: 1px solid rgba(199, 204, 214, 0.14);
   border-radius: 10px;
+  box-shadow:
+    inset 0 0 0 4px rgba(199, 204, 214, 0.04),
+    0 0 0 1px rgba(0, 0, 0, 0.4);
   pointer-events: none;
   z-index: 40;
 }
