@@ -119,6 +119,19 @@ export default function Home() {
 
   return (
     <main className="min-h-screen px-4 sm:px-6 py-12 sm:py-16 md:py-24">
+      {/* Marca d'água do monograma, bem apagada, atrás de tudo */}
+      <div
+        className="fixed inset-0 -z-10 flex items-center justify-center overflow-hidden pointer-events-none select-none"
+        aria-hidden="true"
+      >
+        <span
+          className="font-display leading-none"
+          style={{ fontSize: "min(70vw, 420px)", color: "rgba(228, 231, 236, 0.03)" }}
+        >
+          AS
+        </span>
+      </div>
+
       {/* Glitter sutil no fundo */}
       <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden" aria-hidden="true">
         {pontosGlitter.map((s, i) => (
@@ -168,8 +181,9 @@ export default function Home() {
 
       {/* Hero */}
       <section className="max-w-2xl mx-auto text-center mb-8 sm:mb-10">
-        <div className="mx-auto w-11 h-11 sm:w-12 sm:h-12 rounded-full border border-slateline flex items-center justify-center mb-4 animate-fade-in-up">
-          <span className="font-display text-shimmer text-base sm:text-lg">AS</span>
+        <div className="mx-auto w-11 h-11 sm:w-12 sm:h-12 rounded-full border border-steel/60 bg-graphite/60 flex items-center justify-center mb-4 relative animate-fade-in-up">
+          <div className="absolute inset-[3px] rounded-full border border-slateline/70"></div>
+          <span className="relative font-display text-shimmer text-base sm:text-lg">AS</span>
         </div>
         <div className="mb-7 animate-fade-in-up" style={{ animationDelay: "0.05s" }}>
           <p className="font-display text-shimmer text-xl sm:text-2xl font-medium mb-1.5">
