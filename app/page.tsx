@@ -16,6 +16,15 @@ type Presente = {
 
 type Filtro = "disponiveis" | "todos" | "reservados";
 
+function gerarPontoGlitter() {
+  return {
+    top: `${(Math.random() * 96).toFixed(1)}%`,
+    left: `${(Math.random() * 96).toFixed(1)}%`,
+    delay: `${(Math.random() * 2.6).toFixed(1)}s`,
+    grande: Math.random() > 0.5,
+  };
+}
+
 export default function Home() {
   const [presentes, setPresentes] = useState<Presente[]>([]);
   const [carregando, setCarregando] = useState(true);
@@ -100,22 +109,21 @@ export default function Home() {
       });
   }, [presentes, busca, filtro]);
 
-  const pontosGlitter = [
-    { top: "6%", left: "15%", delay: "0s" },
-    { top: "11%", left: "82%", delay: "0.4s" },
-    { top: "18%", left: "6%", delay: "0.9s" },
-    { top: "24%", left: "92%", delay: "1.3s" },
-    { top: "32%", left: "25%", delay: "1.7s" },
-    { top: "38%", left: "70%", delay: "0.2s" },
-    { top: "46%", left: "45%", delay: "2.1s" },
-    { top: "53%", left: "10%", delay: "0.7s" },
-    { top: "59%", left: "88%", delay: "1.1s" },
-    { top: "67%", left: "58%", delay: "1.9s" },
-    { top: "74%", left: "30%", delay: "0.5s" },
-    { top: "82%", left: "78%", delay: "1.5s" },
-    { top: "89%", left: "18%", delay: "1.0s" },
-    { top: "94%", left: "52%", delay: "0.3s" },
-  ];
+  const [pontosGlitter, setPontosGlitter] = useState(() =>
+    Array.from({ length: 26 }, gerarPontoGlitter)
+  );
+
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      setPontosGlitter((atual) => {
+        const copia = [...atual];
+        const indice = Math.floor(Math.random() * copia.length);
+        copia[indice] = gerarPontoGlitter();
+        return copia;
+      });
+    }, 450);
+    return () => clearInterval(intervalo);
+  }, []);
 
   return (
     <main className="min-h-screen px-4 sm:px-6 py-12 sm:py-16 md:py-24">
@@ -139,7 +147,13 @@ export default function Home() {
           <span
             key={i}
             className="sparkle-dot"
-            style={{ top: s.top, left: s.left, animationDelay: s.delay }}
+            style={{
+              top: s.top,
+              left: s.left,
+              animationDelay: s.delay,
+              width: s.grande ? "2px" : "1.4px",
+              height: s.grande ? "2px" : "1.4px",
+            }}
           />
         ))}
       </div>
