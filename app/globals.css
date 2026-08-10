@@ -22,7 +22,7 @@ body {
   position: relative;
 }
 
-/* Brilho de fundo que "respira" bem devagar, atrás de todo o conteúdo */
+/* Brilho de fundo mais forte, estático — dá profundidade sem "pulsar" */
 body::before {
   content: "";
   position: fixed;
@@ -30,14 +30,8 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background-image:
-    radial-gradient(circle at 50% 5%, #2A2F39 0%, #0B0C10 65%),
+    radial-gradient(circle at 50% 8%, #2E333D 0%, #0B0C10 60%),
     radial-gradient(circle at 50% 100%, #1C1F26 0%, transparent 55%);
-  animation: breathe 4s ease-in-out infinite;
-}
-
-@keyframes breathe {
-  0%, 100% { opacity: 0.85; }
-  50% { opacity: 1; }
 }
 
 /* Pontinhos de glitter — usados no site público */
@@ -173,7 +167,6 @@ body::before {
     color: #E4E7EC;
   }
   body::before {
-    animation: none;
     opacity: 0.9;
   }
   .sparkle-dot {
