@@ -108,9 +108,24 @@ export default function Home() {
           15 anos
         </p>
         <div
-          className="w-12 h-px bg-slateline mx-auto mt-6 sm:mt-8 animate-fade-in-up"
+          className="w-12 h-px bg-slateline mx-auto mt-6 sm:mt-8 mb-6 animate-fade-in-up"
           style={{ animationDelay: "0.2s" }}
         />
+        <button
+          onClick={() => {
+            const texto = encodeURIComponent(
+              `Confira a lista de presentes da festa de 15 anos da Alana Sofia: ${window.location.href}`
+            );
+            window.open(`https://wa.me/?text=${texto}`, "_blank");
+          }}
+          className="inline-flex items-center gap-2 text-xs sm:text-sm px-4 py-2.5 rounded-full border border-slateline text-steel hover:text-platinum hover:border-steel active:scale-[0.98] transition-all animate-fade-in-up"
+          style={{ animationDelay: "0.25s" }}
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.04 2c-5.52 0-10 4.48-10 10 0 1.76.46 3.45 1.33 4.95L2 22l5.2-1.36a9.96 9.96 0 0 0 4.84 1.24h.01c5.52 0 10-4.48 10-10s-4.49-9.88-10.01-9.88Zm5.85 14.1c-.25.7-1.45 1.35-2 1.44-.55.09-1.15.13-1.85-.11-.43-.14-.98-.33-1.68-.65-2.96-1.28-4.89-4.25-5.04-4.45-.15-.2-1.21-1.6-1.21-3.06s.76-2.17 1.03-2.47c.27-.3.59-.37.79-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.25.6.85 2.06.92 2.21.07.15.12.33.02.53-.1.2-.15.33-.3.5-.15.18-.31.4-.45.53-.15.15-.3.31-.13.61.17.3.76 1.25 1.63 2.02 1.12.99 2.06 1.3 2.36 1.45.3.15.48.13.65-.08.18-.2.75-.87.95-1.18.2-.3.4-.25.67-.15.28.1 1.75.83 2.05.98.3.15.5.23.57.35.08.13.08.72-.17 1.42Z" />
+          </svg>
+          Compartilhar no WhatsApp
+        </button>
       </section>
 
       {/* Lista de presentes */}
