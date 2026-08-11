@@ -10,6 +10,7 @@ type Presente = {
   imagem_url: string | null;
   link_compra: string | null;
   maps_url: string | null;
+  onde_comprar: string | null;
   reservado: boolean;
   reservado_por: string | null;
   reservado_mensagem: string | null;
@@ -23,6 +24,7 @@ const vazio = {
   imagem_url: "",
   link_compra: "",
   maps_url: "",
+  onde_comprar: "",
   ordem: 0,
 };
 
@@ -62,6 +64,7 @@ export default function PresentesPage() {
       imagem_url: p.imagem_url ?? "",
       link_compra: p.link_compra ?? "",
       maps_url: p.maps_url ?? "",
+      onde_comprar: p.onde_comprar ?? "",
       ordem: p.ordem ?? 0,
     });
   }
@@ -128,6 +131,7 @@ export default function PresentesPage() {
         imagem_url: p.imagem_url,
         link_compra: p.link_compra,
         maps_url: p.maps_url,
+        onde_comprar: p.onde_comprar,
         ordem: p.ordem,
       }),
     });
@@ -280,6 +284,12 @@ export default function PresentesPage() {
             value={form.maps_url}
             onChange={(e) => setForm({ ...form, maps_url: e.target.value })}
             className={`border rounded-lg px-3 py-2 text-sm ${inputBg}`}
+          />
+          <input
+            placeholder="Onde encontrar (loja física, ex: Loja X, Shopping Y)"
+            value={form.onde_comprar}
+            onChange={(e) => setForm({ ...form, onde_comprar: e.target.value })}
+            className={`border rounded-lg px-3 py-2 text-sm md:col-span-2 ${inputBg}`}
           />
           <textarea
             placeholder="Descrição (opcional)"
