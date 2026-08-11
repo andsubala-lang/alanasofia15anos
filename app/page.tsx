@@ -373,56 +373,61 @@ export default function Home() {
                 >
                   {p.nome}
                 </h3>
-                {p.onde_comprar && (
-                  <div className="flex items-start gap-1.5 mb-3 px-2.5 py-1.5 rounded-lg border border-steel/40 bg-onyx/60">
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      className="shrink-0 mt-0.5 text-silver-bright"
-                    >
+                <div
+                  className="flex items-start gap-1.5 mb-3 px-2.5 py-1.5 rounded-lg border border-steel/40 bg-onyx/60"
+                  style={{ visibility: p.onde_comprar ? "visible" : "hidden" }}
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="shrink-0 mt-0.5 text-silver-bright"
+                  >
+                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  <p className="text-platinum text-xs sm:text-sm font-medium leading-snug">
+                    {p.onde_comprar || "—"}
+                  </p>
+                </div>
+
+                <div className="mt-auto space-y-2">
+                  <a
+                    href={p.link_compra ?? undefined}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-center gap-1.5 text-xs sm:text-sm px-3 py-2 rounded-lg border border-slateline text-platinum hover:border-steel active:scale-[0.98] transition-all"
+                    style={{
+                      visibility: p.link_compra ? "visible" : "hidden",
+                      pointerEvents: p.link_compra ? "auto" : "none",
+                    }}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                      <path d="M15 3h6v6" />
+                      <path d="M10 14 21 3" />
+                    </svg>
+                    Ver na loja
+                  </a>
+                  <a
+                    href={p.maps_url ?? undefined}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-center gap-1.5 text-xs sm:text-sm px-3 py-2 rounded-lg border border-slateline text-platinum hover:border-steel active:scale-[0.98] transition-all"
+                    style={{
+                      visibility: p.maps_url ? "visible" : "hidden",
+                      pointerEvents: p.maps_url ? "auto" : "none",
+                    }}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                       <circle cx="12" cy="10" r="3" />
                     </svg>
-                    <p className="text-platinum text-xs sm:text-sm font-medium leading-snug">
-                      {p.onde_comprar}
-                    </p>
-                  </div>
-                )}
-
-                <div className="mt-auto space-y-2">
-                  {p.link_compra && (
-                    <a
-                      href={p.link_compra}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center gap-1.5 text-xs sm:text-sm px-3 py-2 rounded-lg border border-slateline text-platinum hover:border-steel active:scale-[0.98] transition-all"
-                    >
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                        <path d="M15 3h6v6" />
-                        <path d="M10 14 21 3" />
-                      </svg>
-                      Ver na loja
-                    </a>
-                  )}
-                  {p.maps_url && (
-                    <a
-                      href={p.maps_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center gap-1.5 text-xs sm:text-sm px-3 py-2 rounded-lg border border-slateline text-platinum hover:border-steel active:scale-[0.98] transition-all"
-                    >
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                        <circle cx="12" cy="10" r="3" />
-                      </svg>
-                      Localização
-                    </a>
-                  )}
+                    Localização
+                  </a>
 
                   {p.reservado ? (
                     <div className="text-center py-2.5 rounded-lg bg-onyx border border-slateline text-steel text-xs sm:text-sm">
