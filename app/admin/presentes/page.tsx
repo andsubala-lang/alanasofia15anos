@@ -121,29 +121,6 @@ export default function PresentesPage() {
     }
   }
 
-  async function duplicar(p: Presente) {
-    const res = await fetch("/api/admin/presentes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        nome: `${p.nome} (cópia)`,
-        descricao: p.descricao,
-        imagem_url: p.imagem_url,
-        link_compra: p.link_compra,
-        maps_url: p.maps_url,
-        onde_comprar: p.onde_comprar,
-        ordem: p.ordem,
-      }),
-    });
-
-    if (res.ok) {
-      showToast("Presente duplicado");
-      carregar();
-    } else {
-      showToast("Erro ao duplicar presente", "erro");
-    }
-  }
-
   async function desfazerReserva(id: string) {
     const res = await fetch(`/api/admin/presentes/${id}`, {
       method: "PATCH",
@@ -402,12 +379,6 @@ export default function PresentesPage() {
                         className={`border rounded-lg px-2.5 py-1 text-xs ${border}`}
                       >
                         Editar
-                      </button>
-                      <button
-                        onClick={() => duplicar(p)}
-                        className={`border rounded-lg px-2.5 py-1 text-xs ${border}`}
-                      >
-                        Duplicar
                       </button>
                       <button
                         onClick={() => apagar(p.id)}
