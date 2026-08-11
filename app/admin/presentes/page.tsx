@@ -332,6 +332,7 @@ export default function PresentesPage() {
             <thead>
               <tr className={`text-left border-b ${border} text-steel uppercase text-xs`}>
                 <th className="px-4 py-3">#</th>
+                <th className="px-4 py-3">Foto</th>
                 <th className="px-4 py-3">Presente</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Reservado por</th>
@@ -348,6 +349,19 @@ export default function PresentesPage() {
                   }`}
                 >
                   <td className="px-4 py-3 text-steel">{i + 1}</td>
+                  <td className="px-4 py-3">
+                    {p.imagem_url ? (
+                      <img
+                        src={p.imagem_url}
+                        alt={p.nome}
+                        className="w-10 h-10 rounded-lg object-cover border border-slateline"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-lg border border-slateline bg-onyx flex items-center justify-center text-steel text-[9px]">
+                        Sem foto
+                      </div>
+                    )}
+                  </td>
                   <td className="px-4 py-3 font-medium">
                     {p.nome}
                     {p.reservado_mensagem && (
