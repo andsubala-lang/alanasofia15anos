@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
       imagem_url: body.imagem_url || null,
       link_compra: body.link_compra || null,
       maps_url: body.maps_url || null,
+      onde_comprar: body.onde_comprar || null,
       ordem: body.ordem ?? 0,
     })
     .select()
