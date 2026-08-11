@@ -44,10 +44,12 @@ export default function Home() {
   const [busca, setBusca] = useState("");
   const [filtro, setFiltro] = useState<Filtro>("disponiveis");
   const [aviso, setAviso] = useState<string | null>(null);
+  const [config, setConfig] = useState<Record<string, string>>({});
 
   useEffect(() => {
     carregarPresentes();
     registrarVisita();
+    carregarConfig();
   }, []);
 
   useEffect(() => {
@@ -70,6 +72,15 @@ export default function Home() {
 
   async function registrarVisita() {
     await supabase.from("alana_visitas").insert({});
+  }
+
+  async function carregarConfig() {
+    const { data } = await supabase.from("alana_config").select("chave, valor");
+    const mapa: Record<string, string> = {};
+    (data ?? []).forEach((c) => {
+      mapa[c.chave] = c.valor ?? "";
+    });
+    setConfig(mapa);
   }
 
   async function confirmarReserva(p: Presente) {
@@ -244,10 +255,93 @@ export default function Home() {
         </button>
       </section>
 
+      {/* Recado da Alana */}
+      <section className="max-w-2xl mx-auto mb-10 animate-fade-in-up" style={{ animationDelay: "0.25s" }}>
+        <div className="card-premium px-5 py-6 sm:px-8 sm:py-8 text-left">
+          <p className="font-display text-shimmer text-xl sm:text-2xl mb-4 text-center">
+            Um recadinho da Alana
+          </p>
+
+          <div className="space-y-4 text-steel text-sm leading-relaxed">
+            <p>
+              Preparei essa parte do site com muito carinho para que vocês possam conhecer
+              um pouquinho mais sobre mim, meus gostos e algumas das coisas que eu amo.
+            </p>
+            <p>
+              Mas lembrem-se: tudo isso são apenas sugestões para ajudar quem estiver em
+              dúvida ou não souber muito bem o que escolher. Não existe nenhuma regra ou
+              expectativa, o mais importante para mim é o carinho e a intenção por trás de
+              cada presente.
+            </p>
+            <p>
+              Então, aqui vai uma listinha de algumas coisas que fazem parte dos meus sonhos
+              e que eu adoraria ganhar!
+            </p>
+            <p>
+              Qualquer presente escolhido com carinho será muito especial para mim e, com
+              certeza, vou guardar com muito carinho a lembrança desse momento tão
+              importante.
+            </p>
+            <p>
+              Caso prefiram escolher algo fora da lista, deixo algumas dicas para facilitar:
+              não sou muito fã de maquiagem, tenho um gosto um pouquinho mais seletivo para
+              acessórios e, para roupas, prefiro cores mais neutras e delicadas. Não gosto
+              muito de cores vibrantes ou muito saturadas, nem de estampas.
+            </p>
+          </div>
+
+          <div className="mt-6">
+            <p className="text-platinum text-sm font-medium mb-3">
+              Para facilitar, meus tamanhos são:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { rotulo: "Sapato", valor: "39" },
+                { rotulo: "Calça", valor: "44" },
+                { rotulo: "Blusa", valor: "G" },
+                { rotulo: "Vestido", valor: "G" },
+                { rotulo: "Saia", valor: "G" },
+              ].map((t) => (
+                <span
+                  key={t.rotulo}
+                  className="text-xs sm:text-sm px-3 py-1.5 rounded-full border border-slateline bg-onyx text-platinum"
+                >
+                  <span className="text-steel">{t.rotulo}:</span> {t.valor}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <p className="text-steel text-sm leading-relaxed mt-6">
+            E, para quem preferir não escolher um presente, também vou ficar muito feliz com
+            um carinho em forma de Pix. O mais importante para mim é ter vocês fazendo parte
+            desse momento tão especial e poder comemorar meus 15 anos ao lado de pessoas tão
+            queridas!
+          </p>
+
+          {config.pix_qr_url && (
+            <div className="mt-6 rounded-xl border border-slateline bg-onyx p-5 text-center">
+              <p className="text-platinum text-sm font-medium mb-1">Pix</p>
+              {config.pix_nome && (
+                <p className="text-steel text-xs mb-4">{config.pix_nome}</p>
+              )}
+              <img
+                src={config.pix_qr_url}
+                alt="QR Code Pix"
+                className="w-48 h-48 sm:w-56 sm:h-56 mx-auto rounded-lg border border-slateline bg-white p-2"
+              />
+              <p className="text-steel text-xs mt-4">
+                Escaneie com a câmera do app do seu banco
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
       {/* Aviso pra quem vai comprar pessoalmente */}
       <div
         className="card-premium max-w-md mx-auto mb-10 px-4 py-3.5 flex items-start gap-3 text-left animate-fade-in-up"
-        style={{ animationDelay: "0.25s" }}
+        style={{ animationDelay: "0.3s" }}
       >
         <svg
           width="18"
