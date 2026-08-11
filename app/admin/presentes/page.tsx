@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, FormEvent, useMemo } from "react";
+import { useEffect, useState, FormEvent, useMemo, useRef } from "react";
 import { useToast } from "../ToastProvider";
 
 type Presente = {
@@ -42,6 +42,9 @@ export default function PresentesPage() {
 
   const [busca, setBusca] = useState("");
   const [reservadosPrimeiro, setReservadosPrimeiro] = useState(false);
+  const [confirmandoExclusao, setConfirmandoExclusao] = useState<Presente | null>(null);
+
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     carregar();
@@ -67,12 +70,18 @@ export default function PresentesPage() {
       onde_comprar: p.onde_comprar ?? "",
       ordem: p.ordem ?? 0,
     });
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
   }
 
   function novoPresente() {
     setEditandoId(null);
     setForm(vazio);
     setMostrarForm(true);
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
   }
 
   function cancelarEdicao() {
@@ -111,7 +120,6 @@ export default function PresentesPage() {
   }
 
   async function apagar(id: string) {
-    if (!confirm("Apagar este presente da lista?")) return;
     const res = await fetch(`/api/admin/presentes/${id}`, { method: "DELETE" });
     if (res.ok) {
       showToast("Presente apagado");
@@ -119,6 +127,7 @@ export default function PresentesPage() {
     } else {
       showToast("Erro ao apagar presente", "erro");
     }
+    setConfirmandoExclusao(null);
   }
 
   async function desfazerReserva(id: string) {
@@ -230,8 +239,9 @@ export default function PresentesPage() {
 
       {mostrarForm && (
         <form
+          ref={formRef}
           onSubmit={handleSubmit}
-          className={`${bg} border ${border} rounded-xl p-6 mb-8 grid grid-cols-1 md:grid-cols-2 gap-4`}
+          className={`${bg} border ${border} rounded-xl p-6 mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 scroll-mt-6`}
         >
           <h2 className="md:col-span-2 font-display text-xl">
             {editandoId ? "Editar presente" : "Novo presente"}
@@ -381,7 +391,7 @@ export default function PresentesPage() {
                         Editar
                       </button>
                       <button
-                        onClick={() => apagar(p.id)}
+                        onClick={() => setConfirmandoExclusao(p)}
                         className="border border-red-500/50 text-red-400 rounded-lg px-2.5 py-1 text-xs"
                       >
                         Apagar
@@ -392,6 +402,31 @@ export default function PresentesPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {confirmandoExclusao && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-5 bg-onyx/80 backdrop-blur-sm">
+          <div className={`${bg} border ${border} rounded-xl max-w-sm w-full p-6`}>
+            <h3 className="font-display text-xl mb-2">Apagar presente?</h3>
+            <p className="text-steel text-sm mb-6">
+              Tem certeza que quer apagar "{confirmandoExclusao.nome}"? Essa ação não pode ser desfeita.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => apagar(confirmandoExclusao.id)}
+                className="flex-1 bg-red-500/90 hover:bg-red-500 text-white font-medium rounded-lg py-2 text-sm transition-colors"
+              >
+                Apagar
+              </button>
+              <button
+                onClick={() => setConfirmandoExclusao(null)}
+                className={`flex-1 border rounded-lg py-2 text-sm ${border}`}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
