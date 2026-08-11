@@ -23,7 +23,6 @@ function StatCard({ label, value }: { label: string; value: number | string }) {
 
 export default function AdminDashboardPage() {
   const [presentes, setPresentes] = useState<Presente[]>([]);
-  const [totalVisitas, setTotalVisitas] = useState<number>(0);
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
@@ -33,17 +32,11 @@ export default function AdminDashboardPage() {
   async function carregar() {
     setCarregando(true);
 
-    const [presentesRes, visitasRes] = await Promise.all([
-      supabase
-        .from("alana_presentes")
-        .select("id, nome, reservado, reservado_por, reservado_mensagem, reservado_em"),
-      supabase
-        .from("alana_visitas")
-        .select("*", { count: "exact", head: true }),
-    ]);
+    const { data } = await supabase
+      .from("alana_presentes")
+      .select("id, nome, reservado, reservado_por, reservado_mensagem, reservado_em");
 
-    setPresentes(presentesRes.data ?? []);
-    setTotalVisitas(visitasRes.count ?? 0);
+    setPresentes(data ?? []);
     setCarregando(false);
   }
 
@@ -55,8 +48,17 @@ export default function AdminDashboardPage() {
   ).length;
   const percentualReservado = total > 0 ? Math.round((reservados / total) * 100) : 0;
 
-  const atividadeRecente = [...presentes]
+  const ultimasReservas = [...presentes]
     .filter((p) => p.reservado && p.reservado_em)
+    .sort(
+      (a, b) =>
+        new Date(b.reservado_em as string).getTime() -
+        new Date(a.reservado_em as string).getTime()
+    )
+    .slice(0, 5);
+
+  const ultimasMensagens = [...presentes]
+    .filter((p) => p.reservado_mensagem && p.reservado_mensagem.trim() !== "" && p.reservado_em)
     .sort(
       (a, b) =>
         new Date(b.reservado_em as string).getTime() -
@@ -72,15 +74,11 @@ export default function AdminDashboardPage() {
         <p className="text-steel">Carregando…</p>
       ) : (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <StatCard label="Total de presentes" value={total} />
             <StatCard label="Reservados" value={reservados} />
             <StatCard label="Disponíveis" value={disponiveis} />
             <StatCard label="Com mensagem" value={comMensagem} />
-          </div>
-
-          <div className="mb-8">
-            <StatCard label="Total de visitas" value={totalVisitas} />
           </div>
 
           <div className="bg-graphite border border-slateline rounded-xl p-6 mb-8">
@@ -90,31 +88,57 @@ export default function AdminDashboardPage() {
             </div>
             <div className="w-full h-2 rounded-full bg-onyx overflow-hidden">
               <div
-                className="h-full bg-silver transition-all"
-                style={{ width: `${percentualReservado}%` }}
+                className="h-full transition-all"
+                style={{
+                  width: `${percentualReservado}%`,
+                  background: "linear-gradient(90deg, #8A93A3, #F1F3F6, #C7CCD6)",
+                }}
               />
             </div>
           </div>
 
-          <div className="bg-graphite border border-slateline rounded-xl p-6">
-            <h2 className="font-display text-xl mb-4">Últimas reservas</h2>
-            {atividadeRecente.length === 0 ? (
-              <p className="text-steel text-sm">Nenhuma reserva ainda.</p>
-            ) : (
-              <div className="space-y-4">
-                {atividadeRecente.map((p) => (
-                  <div key={p.id} className="border-b border-slateline last:border-b-0 pb-4 last:pb-0">
-                    <p className="font-medium">{p.reservado_por}</p>
-                    <p className="text-sm text-steel">{p.nome}</p>
-                    {p.reservado_em && (
-                      <p className="text-xs text-steel mt-1">
-                        {new Date(p.reservado_em).toLocaleString("pt-BR")}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-graphite border border-slateline rounded-xl p-6">
+              <h2 className="font-display text-xl mb-4">Últimas reservas</h2>
+              {ultimasReservas.length === 0 ? (
+                <p className="text-steel text-sm">Nenhuma reserva ainda.</p>
+              ) : (
+                <div className="space-y-4">
+                  {ultimasReservas.map((p) => (
+                    <div key={p.id} className="border-b border-slateline last:border-b-0 pb-4 last:pb-0">
+                      <p className="font-medium">{p.reservado_por}</p>
+                      <p className="text-sm text-steel">{p.nome}</p>
+                      {p.reservado_em && (
+                        <p className="text-xs text-steel mt-1">
+                          {new Date(p.reservado_em).toLocaleString("pt-BR")}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="bg-graphite border border-slateline rounded-xl p-6">
+              <h2 className="font-display text-xl mb-4">Últimas mensagens</h2>
+              {ultimasMensagens.length === 0 ? (
+                <p className="text-steel text-sm">Nenhuma mensagem ainda.</p>
+              ) : (
+                <div className="space-y-4">
+                  {ultimasMensagens.map((p) => (
+                    <div key={p.id} className="border-b border-slateline last:border-b-0 pb-4 last:pb-0">
+                      <p className="font-medium">{p.reservado_por}</p>
+                      <p className="text-sm text-steel italic">"{p.reservado_mensagem}"</p>
+                      {p.reservado_em && (
+                        <p className="text-xs text-steel mt-1">
+                          {new Date(p.reservado_em).toLocaleString("pt-BR")}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </>
       )}
