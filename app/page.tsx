@@ -362,7 +362,15 @@ export default function Home() {
               </div>
 
               <div className="p-3 sm:p-4 flex flex-col flex-1">
-                <h3 className="font-body font-extrabold text-sm sm:text-base mb-1 leading-tight text-platinum">
+                <h3
+                  className="font-body font-extrabold text-sm sm:text-base mb-1 leading-tight text-platinum min-h-[2.4em] sm:min-h-[2.5em]"
+                  style={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
                   {p.nome}
                 </h3>
                 {p.onde_comprar && (
