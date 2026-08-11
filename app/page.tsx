@@ -17,6 +17,12 @@ type Presente = {
 
 type Filtro = "disponiveis" | "todos" | "reservados";
 
+function linkDoPresente(p: { link_compra: string | null; maps_url: string | null }) {
+  if (p.link_compra) return { url: p.link_compra, label: "Ver na loja", tipo: "loja" as const };
+  if (p.maps_url) return { url: p.maps_url, label: "Localização", tipo: "local" as const };
+  return { url: null, label: "Ver na loja", tipo: "loja" as const };
+}
+
 function gerarPontoGlitter() {
   return {
     top: `${(Math.random() * 96).toFixed(1)}%`,
@@ -335,7 +341,9 @@ export default function Home() {
         )}
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 items-start">
-          {presentesFiltrados.map((p, i) => (
+          {presentesFiltrados.map((p, i) => {
+            const link = linkDoPresente(p);
+            return (
             <div
               key={p.id}
               className="card-premium overflow-hidden flex flex-col animate-fade-in-up"
@@ -394,39 +402,30 @@ export default function Home() {
                   </p>
                 </div>
 
-                <div className="mt-auto space-y-2">
+                <div className="mt-auto space-y-1.5">
                   <a
-                    href={p.link_compra ?? undefined}
+                    href={link.url ?? undefined}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full inline-flex items-center justify-center gap-1.5 text-xs sm:text-sm px-3 py-2 rounded-lg border border-slateline text-platinum hover:border-steel active:scale-[0.98] transition-all"
                     style={{
-                      visibility: p.link_compra ? "visible" : "hidden",
-                      pointerEvents: p.link_compra ? "auto" : "none",
+                      visibility: link.url ? "visible" : "hidden",
+                      pointerEvents: link.url ? "auto" : "none",
                     }}
                   >
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                      <path d="M15 3h6v6" />
-                      <path d="M10 14 21 3" />
-                    </svg>
-                    Ver na loja
-                  </a>
-                  <a
-                    href={p.maps_url ?? undefined}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-1.5 text-xs sm:text-sm px-3 py-2 rounded-lg border border-slateline text-platinum hover:border-steel active:scale-[0.98] transition-all"
-                    style={{
-                      visibility: p.maps_url ? "visible" : "hidden",
-                      pointerEvents: p.maps_url ? "auto" : "none",
-                    }}
-                  >
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                      <circle cx="12" cy="10" r="3" />
-                    </svg>
-                    Localização
+                    {link.tipo === "loja" ? (
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <path d="M15 3h6v6" />
+                        <path d="M10 14 21 3" />
+                      </svg>
+                    ) : (
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                        <circle cx="12" cy="10" r="3" />
+                      </svg>
+                    )}
+                    {link.label}
                   </a>
 
                   {p.reservado ? (
@@ -480,7 +479,8 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </section>
     </main>
