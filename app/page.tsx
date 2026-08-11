@@ -370,37 +370,28 @@ export default function Home() {
               </div>
 
               <div className="p-3 sm:p-4 flex flex-col flex-1">
-                <h3
-                  className="font-body font-extrabold text-sm sm:text-base mb-1 leading-tight text-platinum min-h-[2.4em] sm:min-h-[2.5em]"
-                  style={{
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
-                >
+                <h3 className="font-body font-extrabold text-sm sm:text-base mb-1 leading-tight text-platinum">
                   {p.nome}
                 </h3>
-                <div
-                  className="flex items-start gap-1.5 mb-3 px-2.5 py-1.5 rounded-lg border border-steel/40 bg-onyx/60"
-                  style={{ visibility: p.onde_comprar ? "visible" : "hidden" }}
-                >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    className="shrink-0 mt-0.5 text-silver-bright"
-                  >
-                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
-                  <p className="text-platinum text-xs sm:text-sm font-medium leading-snug">
-                    {p.onde_comprar || "—"}
-                  </p>
-                </div>
+                {p.onde_comprar && (
+                  <div className="flex items-start gap-1.5 mb-3 px-2.5 py-1.5 rounded-lg border border-steel/40 bg-onyx/60">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      className="shrink-0 mt-0.5 text-silver-bright"
+                    >
+                      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    <p className="text-platinum text-xs sm:text-sm font-medium leading-snug">
+                      {p.onde_comprar}
+                    </p>
+                  </div>
+                )}
 
                 <div className="mt-auto space-y-1.5">
                   <a
