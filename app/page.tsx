@@ -394,30 +394,28 @@ export default function Home() {
                 )}
 
                 <div className="mt-auto space-y-1.5">
-                  <a
-                    href={link.url ?? undefined}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-1.5 text-xs sm:text-sm px-3 py-2 rounded-lg border border-slateline text-platinum hover:border-steel active:scale-[0.98] transition-all"
-                    style={{
-                      visibility: link.url ? "visible" : "hidden",
-                      pointerEvents: link.url ? "auto" : "none",
-                    }}
-                  >
-                    {link.tipo === "loja" ? (
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                        <path d="M15 3h6v6" />
-                        <path d="M10 14 21 3" />
-                      </svg>
-                    ) : (
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                        <circle cx="12" cy="10" r="3" />
-                      </svg>
-                    )}
-                    {link.label}
-                  </a>
+                  {link.url && (
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full inline-flex items-center justify-center gap-1.5 text-xs sm:text-sm px-3 py-2 rounded-lg border border-slateline text-platinum hover:border-steel active:scale-[0.98] transition-all"
+                    >
+                      {link.tipo === "loja" ? (
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                          <path d="M15 3h6v6" />
+                          <path d="M10 14 21 3" />
+                        </svg>
+                      ) : (
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                          <circle cx="12" cy="10" r="3" />
+                        </svg>
+                      )}
+                      {link.label}
+                    </a>
+                  )}
 
                   {p.reservado ? (
                     <div className="text-center py-2.5 rounded-lg bg-onyx border border-slateline text-steel text-xs sm:text-sm">
