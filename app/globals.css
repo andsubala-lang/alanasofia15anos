@@ -60,12 +60,14 @@ body::after {
   border-radius: 9999px;
   background: #F1F3F6;
   box-shadow: 0 0 4px 1px rgba(241, 243, 246, 0.7);
-  animation: twinkle 2.6s ease-in-out infinite;
+  animation-name: twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
 }
 
 @keyframes twinkle {
-  0%, 100% { opacity: 0.15; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: 0.12; transform: translate(0, 0); }
+  50% { opacity: 1; transform: translate(var(--drift-x, 6px), var(--drift-y, -10px)); }
 }
 
 /* Texto com efeito de brilho metálico — usado no nome/monograma */
@@ -159,6 +161,27 @@ body::after {
   background: linear-gradient(90deg, #3A3F4B, transparent);
 }
 
+/* Onda de brilho deslizante — usada na barra de progresso do admin */
+.progress-wave {
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-wave::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  background-size: 60% 100%;
+  background-repeat: no-repeat;
+  animation: progressWave 2s linear infinite;
+}
+
+@keyframes progressWave {
+  0% { background-position: -60% 0; }
+  100% { background-position: 160% 0; }
+}
+
 /* Celebração ao confirmar uma reserva */
 .animate-celebrate {
   animation: celebrate 0.5s var(--ease-premium) both;
@@ -196,7 +219,8 @@ body::after {
   }
   .card-premium,
   .btn-silver,
-  .animate-celebrate {
+  .animate-celebrate,
+  .progress-wave::after {
     transition: none;
     animation: none;
   }
