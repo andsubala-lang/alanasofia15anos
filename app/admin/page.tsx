@@ -88,7 +88,7 @@ export default function AdminDashboardPage() {
             </div>
             <div className="w-full h-2 rounded-full bg-onyx overflow-hidden">
               <div
-                className="h-full transition-all"
+                className="h-full transition-all progress-wave"
                 style={{
                   width: `${percentualReservado}%`,
                   background: "linear-gradient(90deg, #8A93A3, #F1F3F6, #C7CCD6)",
