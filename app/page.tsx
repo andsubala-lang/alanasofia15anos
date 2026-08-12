@@ -45,6 +45,7 @@ export default function Home() {
   const [filtro, setFiltro] = useState<Filtro>("disponiveis");
   const [aviso, setAviso] = useState<string | null>(null);
   const [config, setConfig] = useState<Record<string, string>>({});
+  const [pixCopiado, setPixCopiado] = useState(false);
 
   useEffect(() => {
     carregarPresentes();
@@ -81,6 +82,13 @@ export default function Home() {
       mapa[c.chave] = c.valor ?? "";
     });
     setConfig(mapa);
+  }
+
+  async function copiarPix() {
+    if (!config.pix_chave) return;
+    await navigator.clipboard.writeText(config.pix_chave);
+    setPixCopiado(true);
+    setTimeout(() => setPixCopiado(false), 2500);
   }
 
   async function confirmarReserva(p: Presente) {
@@ -301,6 +309,7 @@ export default function Home() {
                 { rotulo: "Blusa", valor: "G" },
                 { rotulo: "Vestido", valor: "G" },
                 { rotulo: "Saia", valor: "G" },
+                { rotulo: "Anel", valor: "19" },
               ].map((t) => (
                 <span
                   key={t.rotulo}
@@ -333,6 +342,25 @@ export default function Home() {
               <p className="text-steel text-xs mt-4">
                 Escaneie com a câmera do app do seu banco
               </p>
+
+              {config.pix_chave && (
+                <div className="mt-4 pt-4 border-t border-slateline">
+                  <p className="text-steel text-xs mb-2">
+                    Ou copie a chave Pix:
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 text-xs sm:text-sm text-platinum bg-graphite border border-slateline rounded-lg px-3 py-2 break-all text-left">
+                      {config.pix_chave}
+                    </code>
+                    <button
+                      onClick={copiarPix}
+                      className="btn-silver shrink-0 rounded-lg px-3 py-2 text-xs sm:text-sm font-medium whitespace-nowrap"
+                    >
+                      {pixCopiado ? "Copiado!" : "Copiar"}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
