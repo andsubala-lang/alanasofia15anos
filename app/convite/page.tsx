@@ -150,30 +150,35 @@ export default function ConvitePage() {
             onClick={(e) => e.stopPropagation()}
           >
             <p className="font-display text-2xl mb-4 text-center">Recomendações</p>
-            <p className="text-steel text-sm leading-relaxed mb-4">
-              Não sou muito fã de maquiagem, tenho um gosto um pouquinho mais seletivo
-              para acessórios e, para roupas, prefiro cores mais neutras e delicadas.
-              Não gosto muito de cores vibrantes ou muito saturadas, nem de estampas.
-            </p>
-            <p className="text-platinum text-sm font-medium mb-3">Meus tamanhos:</p>
-            <div className="flex flex-wrap gap-2 mb-2">
-              {[
-                { rotulo: "Sapato", valor: "39" },
-                { rotulo: "Calça", valor: "44" },
-                { rotulo: "Blusa", valor: "G" },
-                { rotulo: "Vestido", valor: "G" },
-                { rotulo: "Saia", valor: "G" },
-                { rotulo: "Anel", valor: "19" },
-              ].map((t) => (
-                <span
-                  key={t.rotulo}
-                  className="text-xs px-3 py-1.5 rounded-full border border-slateline bg-onyx text-platinum"
-                >
-                  <span className="text-steel">{t.rotulo}:</span> {t.valor}
-                </span>
-              ))}
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C7CCD6" strokeWidth="1.75" className="shrink-0 mt-0.5">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 7v5l3 3" />
+                </svg>
+                <p className="text-steel text-sm leading-relaxed">
+                  <span className="text-platinum font-medium">Seja pontual</span> — a festa começa às 21h.
+                </p>
+              </div>
+              <div className="flex items-start gap-3">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C7CCD6" strokeWidth="1.75" className="shrink-0 mt-0.5">
+                  <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23Z" />
+                </svg>
+                <p className="text-steel text-sm leading-relaxed">
+                  <span className="text-platinum font-medium">Traje: esporte fino</span>
+                </p>
+              </div>
+              <div className="flex items-start gap-3">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C7CCD6" strokeWidth="1.75" className="shrink-0 mt-0.5">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="m4.9 4.9 14.2 14.2" />
+                </svg>
+                <p className="text-steel text-sm leading-relaxed">
+                  <span className="text-platinum font-medium">Evite roupas pretas ou prateadas</span> — são as cores da decoração da festa.
+                </p>
+              </div>
             </div>
-            <button onClick={fecharModal} className="mt-5 w-full text-steel text-sm border border-slateline rounded-lg py-2">
+            <button onClick={fecharModal} className="mt-6 w-full text-steel text-sm border border-slateline rounded-lg py-2">
               Fechar
             </button>
           </div>
