@@ -57,57 +57,63 @@ export default function ConvitePage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center px-4 py-10">
-      <div className="relative w-full max-w-sm rounded-2xl overflow-hidden border border-slateline">
-        <img src="https://i.imgur.com/nqEkE7M.png" alt="Convite de 15 anos da Alana Sofia" className="w-full block" />
+      <div className="w-full max-w-sm rounded-2xl overflow-hidden border border-slateline bg-onyx">
+        {/* Imagem cortada antes das caixinhas vazias da arte original */}
+        <div style={{ position: "relative", width: "100%", paddingTop: "115%", overflow: "hidden" }}>
+          <img
+            src="https://i.imgur.com/nqEkE7M.png"
+            alt="Convite de 15 anos da Alana Sofia"
+            style={{ position: "absolute", top: 0, left: 0, width: "100%", display: "block" }}
+          />
+        </div>
 
-        <Link
-          href="/"
-          className="absolute flex flex-row items-center justify-center gap-2"
-          style={{ top: "76.5%", left: "13.5%", width: "32%", height: "7.3%" }}
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F1F3F6" strokeWidth="2">
-            <rect x="3" y="9" width="18" height="4" rx="1" />
-            <rect x="5" y="13" width="14" height="8" rx="1" />
-            <path d="M12 9v12" />
-          </svg>
-          <span className="text-[9px] text-platinum tracking-wide">PRESENTES</span>
-        </Link>
+        {/* Botões recriados com código — alinhamento garantido */}
+        <div className="grid grid-cols-2 gap-3 p-4">
+          <Link
+            href="/"
+            className="flex items-center justify-center gap-2 border border-slateline rounded-lg py-3.5"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F1F3F6" strokeWidth="2">
+              <rect x="3" y="9" width="18" height="4" rx="1" />
+              <rect x="5" y="13" width="14" height="8" rx="1" />
+              <path d="M12 9v12" />
+            </svg>
+            <span className="text-[10px] text-platinum tracking-wide">PRESENTES</span>
+          </Link>
 
-        <button
-          onClick={() => setModal("local")}
-          className="absolute flex flex-row items-center justify-center gap-2"
-          style={{ top: "76.5%", left: "53.5%", width: "32%", height: "7.3%" }}
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F1F3F6" strokeWidth="2">
-            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-            <circle cx="12" cy="10" r="3" />
-          </svg>
-          <span className="text-[9px] text-platinum tracking-wide">LOCAL</span>
-        </button>
+          <button
+            onClick={() => setModal("local")}
+            className="flex items-center justify-center gap-2 border border-slateline rounded-lg py-3.5"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F1F3F6" strokeWidth="2">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <span className="text-[10px] text-platinum tracking-wide">LOCAL</span>
+          </button>
 
-        <button
-          onClick={() => setModal("recomendacoes")}
-          className="absolute flex flex-row items-center justify-center gap-1.5"
-          style={{ top: "86.3%", left: "13.5%", width: "32%", height: "7.3%" }}
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F1F3F6" strokeWidth="2" className="shrink-0">
-            <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z" />
-          </svg>
-          <span className="text-[8px] text-platinum tracking-wide">RECOMENDAÇÕES</span>
-        </button>
+          <button
+            onClick={() => setModal("recomendacoes")}
+            className="flex items-center justify-center gap-1.5 border border-slateline rounded-lg py-3.5"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F1F3F6" strokeWidth="2" className="shrink-0">
+              <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z" />
+            </svg>
+            <span className="text-[9px] text-platinum tracking-wide">RECOMENDAÇÕES</span>
+          </button>
 
-        <button
-          onClick={() => setModal("presenca")}
-          className="absolute flex flex-row items-center justify-center gap-2"
-          style={{ top: "86.3%", left: "53.5%", width: "32%", height: "7.3%" }}
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F1F3F6" strokeWidth="2">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="m17 11 2 2 4-4" />
-          </svg>
-          <span className="text-[9px] text-platinum tracking-wide">PRESENÇA</span>
-        </button>
+          <button
+            onClick={() => setModal("presenca")}
+            className="flex items-center justify-center gap-2 border border-slateline rounded-lg py-3.5"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F1F3F6" strokeWidth="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="m17 11 2 2 4-4" />
+            </svg>
+            <span className="text-[10px] text-platinum tracking-wide">PRESENÇA</span>
+          </button>
+        </div>
       </div>
 
       {modal === "local" && (
