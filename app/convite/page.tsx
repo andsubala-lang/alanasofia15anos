@@ -34,10 +34,28 @@ export default function ConvitePage() {
     }
 
     setEnviando(true);
-    const { error } = await supabase.from("alana_presenca").insert({
-      nome: nome.trim(),
-      vai_comparecer: vaiComparecer,
+
+    // Verifica se esse nome já confirmou antes, pra atualizar em vez de duplicar
+    const { data: existente } = await supabase.rpc("verificar_confirmacao_existente", {
+      nome_busca: nome.trim(),
     });
+
+    let error = null;
+
+    if (existente && existente.length > 0) {
+      const resultado = await supabase.rpc("atualizar_confirmacao", {
+        confirmacao_id: existente[0].id,
+        novo_valor: vaiComparecer,
+      });
+      error = resultado.error;
+    } else {
+      const resultado = await supabase.from("alana_presenca").insert({
+        nome: nome.trim(),
+        vai_comparecer: vaiComparecer,
+      });
+      error = resultado.error;
+    }
+
     setEnviando(false);
 
     if (!error) {
