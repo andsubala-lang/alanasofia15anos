@@ -5,21 +5,10 @@ function autenticado(request: NextRequest) {
   return request.cookies.get("admin_session")?.value === process.env.ADMIN_PASSWORD;
 }
 
-export async function GET(request: NextRequest) {
-  if (!autenticado(request)) {
-    return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
-  }
-
-  const { data, error } = await supabaseAdmin
-    .from("alana_convidados")
-    .select("*")
-    .order("grupo", { ascending: true });
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ convidados: data });
-}
-
-export async function POST(request: NextRequest) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   if (!autenticado(request)) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
@@ -28,13 +17,28 @@ export async function POST(request: NextRequest) {
 
   const { data, error } = await supabaseAdmin
     .from("alana_convidados")
-    .insert({
-      grupo: body.grupo,
-      integrantes: body.integrantes || null,
-    })
+    .update(body)
+    .eq("id", params.id)
     .select()
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ convidado: data });
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  if (!autenticado(request)) {
+    return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
+  }
+
+  const { error } = await supabaseAdmin
+    .from("alana_convidados")
+    .delete()
+    .eq("id", params.id);
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ ok: true });
 }
