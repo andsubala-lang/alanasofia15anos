@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 type Presenca = {
   id: string;
@@ -16,6 +16,7 @@ export default function PresencaPage() {
   const [nomeEdicao, setNomeEdicao] = useState("");
   const [vaiEdicao, setVaiEdicao] = useState(true);
   const [confirmandoExclusao, setConfirmandoExclusao] = useState<Presenca | null>(null);
+  const [busca, setBusca] = useState("");
 
   useEffect(() => {
     carregar();
@@ -78,6 +79,10 @@ export default function PresencaPage() {
   const vao = presencas.filter((p) => p.vai_comparecer).length;
   const naoVao = total - vao;
 
+  const listaExibida = useMemo(() => {
+    return presencas.filter((p) => p.nome.toLowerCase().includes(busca.toLowerCase()));
+  }, [presencas, busca]);
+
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
@@ -106,10 +111,19 @@ export default function PresencaPage() {
         </div>
       </div>
 
+      <input
+        placeholder="Buscar por nome..."
+        value={busca}
+        onChange={(e) => setBusca(e.target.value)}
+        className="w-full md:w-80 bg-onyx border border-slateline rounded-lg px-3 py-2 text-sm text-platinum placeholder:text-steel focus:outline-none mb-6"
+      />
+
       {carregando ? (
         <p className="text-steel">Carregando…</p>
       ) : presencas.length === 0 ? (
         <p className="text-steel">Nenhuma confirmação ainda.</p>
+      ) : listaExibida.length === 0 ? (
+        <p className="text-steel">Nenhum resultado para "{busca}".</p>
       ) : (
         <div className="bg-graphite border border-slateline rounded-xl overflow-hidden overflow-x-auto">
           <table className="w-full text-sm">
@@ -122,7 +136,7 @@ export default function PresencaPage() {
               </tr>
             </thead>
             <tbody>
-              {presencas.map((p, i) => (
+              {listaExibida.map((p, i) => (
                 <tr
                   key={p.id}
                   className={`border-b border-slateline last:border-b-0 ${
