@@ -1,68 +1,71 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
+type Convidado = {
+  id: string;
+  grupo: string;
+  vai_comparecer: boolean | null;
+};
+
 export default function ConvitePage() {
-  const [nome, setNome] = useState("");
-  const [vaiComparecer, setVaiComparecer] = useState<boolean | null>(null);
+  const [busca, setBusca] = useState("");
+  const [resultados, setResultados] = useState<Convidado[]>([]);
+  const [buscando, setBuscando] = useState(false);
+  const [selecionado, setSelecionado] = useState<Convidado | null>(null);
   const [enviando, setEnviando] = useState(false);
-  const [erro, setErro] = useState("");
-  const [enviado, setEnviado] = useState(false);
+  const [enviado, setEnviado] = useState<boolean | null>(null);
   const [totalConfirmados, setTotalConfirmados] = useState<number | null>(null);
 
   useEffect(() => {
     carregarContador();
   }, []);
 
+  useEffect(() => {
+    if (selecionado) return;
+    if (busca.trim().length < 2) {
+      setResultados([]);
+      return;
+    }
+    const timeout = setTimeout(() => buscarConvidados(busca), 300);
+    return () => clearTimeout(timeout);
+  }, [busca, selecionado]);
+
   async function carregarContador() {
-    const { data } = await supabase.rpc("contar_confirmados");
+    const { data } = await supabase.rpc("contar_confirmados_convidados");
     if (typeof data === "number") setTotalConfirmados(data);
   }
 
-  async function confirmarPresenca(e: FormEvent) {
-    e.preventDefault();
-    setErro("");
+  async function buscarConvidados(termo: string) {
+    setBuscando(true);
+    const { data } = await supabase.rpc("buscar_convidados", { termo });
+    setResultados(data ?? []);
+    setBuscando(false);
+  }
 
-    if (!nome.trim()) {
-      setErro("Digite seu nome");
-      return;
-    }
-    if (vaiComparecer === null) {
-      setErro('Escolha "Vou" ou "Não vou"');
-      return;
-    }
+  function escolherConvidado(c: Convidado) {
+    setSelecionado(c);
+    setBusca(c.grupo);
+    setResultados([]);
+  }
 
+  function trocarBusca(valor: string) {
+    setBusca(valor);
+    if (selecionado) setSelecionado(null);
+  }
+
+  async function responder(valor: boolean) {
+    if (!selecionado) return;
     setEnviando(true);
-
-    // Verifica se esse nome já confirmou antes, pra atualizar em vez de duplicar
-    const { data: existente } = await supabase.rpc("verificar_confirmacao_existente", {
-      nome_busca: nome.trim(),
+    const { error } = await supabase.rpc("responder_presenca", {
+      convidado_id: selecionado.id,
+      novo_valor: valor,
     });
-
-    let error = null;
-
-    if (existente && existente.length > 0) {
-      const resultado = await supabase.rpc("atualizar_confirmacao", {
-        confirmacao_id: existente[0].id,
-        novo_valor: vaiComparecer,
-      });
-      error = resultado.error;
-    } else {
-      const resultado = await supabase.from("alana_presenca").insert({
-        nome: nome.trim(),
-        vai_comparecer: vaiComparecer,
-      });
-      error = resultado.error;
-    }
-
     setEnviando(false);
-
     if (!error) {
-      setEnviado(true);
+      setEnviado(valor);
       carregarContador();
-    } else {
-      setErro("Algo deu errado. Tente novamente.");
     }
   }
 
@@ -79,7 +82,7 @@ export default function ConvitePage() {
           Confirme sua presença
         </h1>
 
-        {enviado ? (
+        {enviado !== null ? (
           <div>
             <svg
               width="30"
@@ -93,51 +96,80 @@ export default function ConvitePage() {
               <circle cx="12" cy="12" r="9" />
               <path d="m8 12 3 3 5-6" />
             </svg>
-            <p className="font-display text-xl mb-2">Presença registrada!</p>
-            <p className="text-steel text-sm">Obrigada por confirmar.</p>
+            <p className="font-display text-xl mb-2">
+              {enviado ? "Presença confirmada!" : "Resposta registrada"}
+            </p>
+            <p className="text-steel text-sm">
+              {enviado ? "Obrigada por confirmar." : "Sentiremos sua falta!"}
+            </p>
           </div>
         ) : (
-          <form onSubmit={confirmarPresenca} className="text-left">
+          <div className="text-left">
+            <label className="block text-xs text-steel mb-2">
+              Digite o nome que está no convite
+            </label>
             <input
               type="text"
-              placeholder="Seu nome"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              className="w-full bg-onyx border border-slateline rounded-lg px-3 py-2.5 text-sm text-platinum placeholder:text-steel focus:outline-none mb-3"
+              placeholder="Ex: Ana Paula família"
+              value={busca}
+              onChange={(e) => trocarBusca(e.target.value)}
+              className="w-full bg-onyx border border-slateline rounded-lg px-3 py-2.5 text-sm text-platinum placeholder:text-steel focus:outline-none mb-2"
+              autoComplete="off"
             />
-            <div className="flex gap-2 mb-3">
-              <button
-                type="button"
-                onClick={() => setVaiComparecer(true)}
-                className={`flex-1 rounded-lg py-2.5 text-sm border transition-colors ${
-                  vaiComparecer === true
-                    ? "bg-silver text-onyx border-silver"
-                    : "border-slateline text-steel"
-                }`}
-              >
-                Vou
-              </button>
-              <button
-                type="button"
-                onClick={() => setVaiComparecer(false)}
-                className={`flex-1 rounded-lg py-2.5 text-sm border transition-colors ${
-                  vaiComparecer === false
-                    ? "bg-silver text-onyx border-silver"
-                    : "border-slateline text-steel"
-                }`}
-              >
-                Não vou
-              </button>
-            </div>
-            {erro && <p className="text-red-400 text-xs mb-3">{erro}</p>}
-            <button
-              type="submit"
-              disabled={enviando}
-              className="btn-silver w-full rounded-lg py-2.5 text-sm font-medium disabled:opacity-40"
-            >
-              {enviando ? "Enviando…" : "Enviar"}
-            </button>
-          </form>
+
+            {!selecionado && busca.trim().length >= 2 && (
+              <div className="border border-slateline rounded-lg overflow-hidden mb-3">
+                {buscando && (
+                  <p className="text-steel text-xs px-3 py-2.5">Buscando…</p>
+                )}
+                {!buscando && resultados.length === 0 && (
+                  <p className="text-steel text-xs px-3 py-2.5">
+                    Nenhum nome encontrado. Confira a grafia ou fale com quem te convidou.
+                  </p>
+                )}
+                {!buscando &&
+                  resultados.map((c) => (
+                    <button
+                      key={c.id}
+                      onClick={() => escolherConvidado(c)}
+                      className="w-full text-left px-3 py-2.5 text-sm text-platinum hover:bg-graphite border-b border-slateline last:border-b-0"
+                    >
+                      {c.grupo}
+                    </button>
+                  ))}
+              </div>
+            )}
+
+            {selecionado && (
+              <div className="animate-fade-in-up">
+                {selecionado.vai_comparecer !== null && (
+                  <p className="text-steel text-xs mb-3">
+                    Última resposta:{" "}
+                    <span className="text-platinum">
+                      {selecionado.vai_comparecer ? "Vai comparecer" : "Não vai"}
+                    </span>{" "}
+                    — pode alterar abaixo.
+                  </p>
+                )}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => responder(true)}
+                    disabled={enviando}
+                    className="btn-silver flex-1 rounded-lg py-2.5 text-sm font-medium disabled:opacity-40"
+                  >
+                    {enviando ? "Enviando…" : "Vou"}
+                  </button>
+                  <button
+                    onClick={() => responder(false)}
+                    disabled={enviando}
+                    className="flex-1 rounded-lg py-2.5 text-sm border border-slateline text-steel disabled:opacity-40"
+                  >
+                    Não vou
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         )}
 
         {totalConfirmados !== null && totalConfirmados > 0 && (
