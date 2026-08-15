@@ -40,6 +40,17 @@ const itens = [
       </svg>
     ),
   },
+  {
+    href: "/admin/presenca",
+    label: "Presença",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="m17 11 2 2 4-4" />
+      </svg>
+    ),
+  },
 ];
 
 export default function AdminNav({
