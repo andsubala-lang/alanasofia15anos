@@ -3,64 +3,79 @@
 import { useState, useEffect, useMemo } from "react";
 import { supabase } from "@/lib/supabase";
 
-type Convidado = {
+type Familia = {
   id: string;
-  grupo: string;
-  integrantes: string | null;
+  nome: string;
+  total_integrantes: number;
+  respondidos: number;
+};
+
+type Integrante = {
+  id: string;
+  nome: string;
   vai_comparecer: boolean | null;
 };
 
 export default function ConvitePage() {
-  const [convidados, setConvidados] = useState<Convidado[]>([]);
+  const [familias, setFamilias] = useState<Familia[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [busca, setBusca] = useState("");
-  const [grupoAberto, setGrupoAberto] = useState<Convidado | null>(null);
-  const [enviando, setEnviando] = useState(false);
-  const [enviado, setEnviado] = useState<boolean | null>(null);
+  const [familiaAberta, setFamiliaAberta] = useState<Familia | null>(null);
+  const [integrantes, setIntegrantes] = useState<Integrante[]>([]);
+  const [carregandoIntegrantes, setCarregandoIntegrantes] = useState(false);
+  const [enviandoId, setEnviandoId] = useState<string | null>(null);
   const [totalConfirmados, setTotalConfirmados] = useState<number | null>(null);
 
   useEffect(() => {
-    carregarConvidados();
+    carregarFamilias();
     carregarContador();
   }, []);
 
-  async function carregarConvidados() {
+  async function carregarFamilias() {
     setCarregando(true);
-    const { data } = await supabase.rpc("listar_convidados");
-    setConvidados(data ?? []);
+    const { data } = await supabase.rpc("listar_familias");
+    setFamilias(data ?? []);
     setCarregando(false);
   }
 
   async function carregarContador() {
-    const { data } = await supabase.rpc("contar_confirmados_convidados");
+    const { data } = await supabase.rpc("contar_confirmados_pessoas");
     if (typeof data === "number") setTotalConfirmados(data);
   }
 
-  async function responder(valor: boolean) {
-    if (!grupoAberto) return;
-    setEnviando(true);
-    const { error } = await supabase.rpc("responder_presenca", {
-      convidado_id: grupoAberto.id,
+  async function abrirFamilia(f: Familia) {
+    setFamiliaAberta(f);
+    setCarregandoIntegrantes(true);
+    const { data } = await supabase.rpc("listar_integrantes", { familia_id_busca: f.id });
+    setIntegrantes(data ?? []);
+    setCarregandoIntegrantes(false);
+  }
+
+  async function responder(integranteId: string, valor: boolean) {
+    setEnviandoId(integranteId);
+    const { error } = await supabase.rpc("responder_integrante", {
+      integrante_id: integranteId,
       novo_valor: valor,
     });
-    setEnviando(false);
+    setEnviandoId(null);
     if (!error) {
-      setEnviado(valor);
+      setIntegrantes((atual) =>
+        atual.map((i) => (i.id === integranteId ? { ...i, vai_comparecer: valor } : i))
+      );
       carregarContador();
+      carregarFamilias();
     }
   }
 
   function voltar() {
-    setGrupoAberto(null);
-    setEnviado(null);
+    setFamiliaAberta(null);
+    setIntegrantes([]);
   }
 
   const listaFiltrada = useMemo(() => {
-    if (!busca.trim()) return convidados;
-    return convidados.filter((c) =>
-      c.grupo.toLowerCase().includes(busca.toLowerCase())
-    );
-  }, [convidados, busca]);
+    if (!busca.trim()) return familias;
+    return familias.filter((f) => f.nome.toLowerCase().includes(busca.toLowerCase()));
+  }, [familias, busca]);
 
   return (
     <main className="min-h-screen flex items-center justify-center px-4 py-10">
@@ -75,7 +90,7 @@ export default function ConvitePage() {
           Confirme sua presença
         </h1>
 
-        {grupoAberto ? (
+        {familiaAberta ? (
           <div className="text-left animate-fade-in-up">
             <button
               onClick={voltar}
@@ -87,60 +102,48 @@ export default function ConvitePage() {
               Voltar pra lista
             </button>
 
-            {enviado !== null ? (
-              <div className="text-center py-4">
-                <svg
-                  width="30"
-                  height="30"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#C7CCD6"
-                  strokeWidth="1.75"
-                  className="mx-auto mb-3"
-                >
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="m8 12 3 3 5-6" />
-                </svg>
-                <p className="font-display text-xl mb-2">
-                  {enviado ? "Presença confirmada!" : "Resposta registrada"}
-                </p>
-                <p className="text-steel text-sm">
-                  {enviado ? "Obrigada por confirmar." : "Sentiremos sua falta!"}
-                </p>
-              </div>
+            <p className="font-display text-xl mb-1 text-center">{familiaAberta.nome}</p>
+            <p className="text-steel text-xs text-center mb-5">
+              Cada pessoa responde por si
+            </p>
+
+            {carregandoIntegrantes ? (
+              <p className="text-steel text-sm text-center py-4">Carregando…</p>
             ) : (
-              <>
-                <p className="font-display text-xl mb-2 text-center">{grupoAberto.grupo}</p>
-                {grupoAberto.integrantes && (
-                  <p className="text-steel text-sm text-center mb-5">
-                    {grupoAberto.integrantes}
-                  </p>
-                )}
-                {grupoAberto.vai_comparecer !== null && (
-                  <p className="text-steel text-xs text-center mb-3">
-                    Última resposta:{" "}
-                    <span className="text-platinum">
-                      {grupoAberto.vai_comparecer ? "Vai comparecer" : "Não vai"}
-                    </span>
-                  </p>
-                )}
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => responder(true)}
-                    disabled={enviando}
-                    className="btn-silver flex-1 rounded-lg py-2.5 text-sm font-medium disabled:opacity-40"
+              <div className="space-y-3">
+                {integrantes.map((i) => (
+                  <div
+                    key={i.id}
+                    className="border border-slateline rounded-lg px-3 py-3"
                   >
-                    {enviando ? "Enviando…" : "Vou"}
-                  </button>
-                  <button
-                    onClick={() => responder(false)}
-                    disabled={enviando}
-                    className="flex-1 rounded-lg py-2.5 text-sm border border-slateline text-steel disabled:opacity-40"
-                  >
-                    Não vou
-                  </button>
-                </div>
-              </>
+                    <p className="text-platinum text-sm font-medium mb-2">{i.nome}</p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => responder(i.id, true)}
+                        disabled={enviandoId === i.id}
+                        className={`flex-1 rounded-lg py-2 text-xs font-medium border transition-colors disabled:opacity-40 ${
+                          i.vai_comparecer === true
+                            ? "bg-silver text-onyx border-silver"
+                            : "border-slateline text-steel"
+                        }`}
+                      >
+                        Vou
+                      </button>
+                      <button
+                        onClick={() => responder(i.id, false)}
+                        disabled={enviandoId === i.id}
+                        className={`flex-1 rounded-lg py-2 text-xs font-medium border transition-colors disabled:opacity-40 ${
+                          i.vai_comparecer === false
+                            ? "bg-graphite text-red-400 border-red-500/50"
+                            : "border-slateline text-steel"
+                        }`}
+                      >
+                        Não vou
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         ) : (
@@ -156,25 +159,19 @@ export default function ConvitePage() {
             {carregando ? (
               <p className="text-steel text-sm text-center py-4">Carregando…</p>
             ) : listaFiltrada.length === 0 ? (
-              <p className="text-steel text-sm text-center py-4">Nenhum nome encontrado.</p>
+              <p className="text-steel text-sm text-center py-4">Nenhuma família encontrada.</p>
             ) : (
               <div className="border border-slateline rounded-lg overflow-hidden max-h-80 overflow-y-auto">
-                {listaFiltrada.map((c) => (
+                {listaFiltrada.map((f) => (
                   <button
-                    key={c.id}
-                    onClick={() => setGrupoAberto(c)}
+                    key={f.id}
+                    onClick={() => abrirFamilia(f)}
                     className="w-full text-left px-3 py-2.5 text-sm text-platinum hover:bg-graphite border-b border-slateline last:border-b-0 flex items-center justify-between gap-2"
                   >
-                    <span>{c.grupo}</span>
-                    {c.vai_comparecer !== null && (
-                      <span
-                        className={`text-[10px] shrink-0 ${
-                          c.vai_comparecer ? "text-emerald-400" : "text-red-400"
-                        }`}
-                      >
-                        {c.vai_comparecer ? "Vai" : "Não vai"}
-                      </span>
-                    )}
+                    <span>{f.nome}</span>
+                    <span className="text-[10px] text-steel shrink-0">
+                      {f.respondidos}/{f.total_integrantes} responderam
+                    </span>
                   </button>
                 ))}
               </div>
